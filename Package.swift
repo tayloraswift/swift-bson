@@ -2,9 +2,7 @@
 import PackageDescription
 
 let package:Package = .init(name: "swift-bson",
-    platforms: [
-        .macOS(.v15),
-    ],
+    platforms: [.macOS(.v15), .iOS(.v17), .tvOS(.v17), .visionOS(.v1), .watchOS(.v9)],
     products: [
         .library(name: "BSON", targets: ["BSON"]),
         .library(name: "BSONLegacy", targets: ["BSONLegacy"]),
