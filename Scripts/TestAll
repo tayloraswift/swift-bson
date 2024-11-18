@@ -9,7 +9,3 @@ swift build -c release \
 swift test -c release \
     --skip-build \
     --explicit-target-dependency-import-check=error
-
-for f in .build/release/*Tests; do
-    $f
-done
