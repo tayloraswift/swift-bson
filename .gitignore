@@ -3,5 +3,7 @@
 .build.unidoc
 .vscode
 
+Benchmarks/.build
+
 Packages/
 Package.resolved
