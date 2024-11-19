@@ -2,16 +2,12 @@ import Benchmark
 import BSON
 
 @MainActor
-let benchmarks =
-{
+let benchmarks:() -> () = {
     Benchmark.init("EncodeDates",
         configuration: .init(
             metrics: BenchmarkMetric.all,
-            timeUnits: .microseconds,
-            maxDuration: .seconds(10)))
+            timeUnits: .microseconds))
     {
-        benchmark in
-
         // generate dates
         var dates:[Date] = []
         var index:Int = 4
@@ -30,7 +26,7 @@ let benchmarks =
         }
         print("generated \(dates.count) dates")
 
-        benchmark.startMeasurement()
+        $0.startMeasurement()
 
         for _:Int in 0 ..< 5
         {
