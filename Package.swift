@@ -9,6 +9,7 @@ let package:Package = .init(name: "swift-bson",
         .library(name: "BSONReflection", targets: ["BSONReflection"]),
         .library(name: "BSONABI", targets: ["BSONABI"]),
 
+        .library(name: "BSON_ISO", targets: ["BSON_ISO"]),
         .library(name: "BSON_OrderedCollections", targets: ["BSON_OrderedCollections"]),
         .library(name: "BSON_UUID", targets: ["BSON_UUID"]),
     ],
