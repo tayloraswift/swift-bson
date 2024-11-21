@@ -20,7 +20,7 @@ let package:Package = .init(name: "swift-bson",
             from: "0.7.0")),
         .package(url: "https://github.com/tayloraswift/swift-unixtime", .upToNextMinor(
             from: "0.1.5")),
-        .package(url: "https://github.com/apple/swift-collections.git",
+        .package(url: "https://github.com/apple/swift-collections",
             from: "1.1.4"),
     ],
     targets: [
@@ -28,9 +28,6 @@ let package:Package = .init(name: "swift-bson",
             dependencies: [
                 .target(name: "BSONDecoding"),
                 .target(name: "BSONEncoding"),
-            ],
-            exclude: [
-                "README.md",
             ]),
 
         .target(name: "BSONABI",
