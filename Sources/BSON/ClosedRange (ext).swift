@@ -23,7 +23,7 @@ extension ClosedRange:BSONDocumentEncodable, BSONEncodable where Bound:BSONEncod
 }
 extension ClosedRange:BSONDocumentDecodable, BSONDecodable where Bound:BSONDecodable
 {
-    /// If the range is invalid, the initializer throws an ``CodingError/invalidBounds`` error.
+    /// If the range is invalid, the initializer throws an error.
     @inlinable public
     init(bson:BSON.DocumentDecoder<CodingKey>) throws
     {

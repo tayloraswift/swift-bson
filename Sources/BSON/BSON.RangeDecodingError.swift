@@ -1,6 +1,6 @@
 extension BSON
 {
-    @frozen public
+    @frozen @usableFromInline
     enum RangeDecodingError:Error
     {
         case invalidBounds
@@ -8,7 +8,7 @@ extension BSON
 }
 extension BSON.RangeDecodingError:CustomStringConvertible
 {
-    public
+    @usableFromInline
     var description:String
     {
         switch self
