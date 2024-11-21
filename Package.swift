@@ -65,16 +65,22 @@ let package:Package = .init(name: "swift-bson",
                 .target(name: "BSON"),
             ]),
 
-        .target(name: "BSON_UUID",
-            dependencies: [
-                .target(name: "BSON"),
-                .product(name: "UUID", package: "swift-hash"),
-            ]),
-
         .target(name: "BSON_OrderedCollections",
             dependencies: [
                 .target(name: "BSON"),
                 .product(name: "OrderedCollections", package: "swift-collections"),
+            ]),
+
+        .target(name: "BSON_ISO",
+            dependencies: [
+                .target(name: "BSON"),
+                .product(name: "ISO", package: "swift-unixtime"),
+            ]),
+
+        .target(name: "BSON_UUID",
+            dependencies: [
+                .target(name: "BSON"),
+                .product(name: "UUID", package: "swift-hash"),
             ]),
 
 

@@ -150,14 +150,14 @@ extension BSON.AnyValue
     @inlinable public
     func cast<T>(with cast:(Self) throws -> T?) throws -> T
     {
-        if let value:T = try cast(self)
-        {
-            return value
-        }
+        guard
+        let value:T = try cast(self)
         else
         {
             throw BSON.TypecastError<T>.init(invalid: self.type)
         }
+
+        return value
     }
 }
 extension BSON.AnyValue
