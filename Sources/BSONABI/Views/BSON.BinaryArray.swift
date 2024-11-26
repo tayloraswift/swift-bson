@@ -22,12 +22,23 @@ extension BSON
 }
 extension BSON.BinaryArray
 {
+    /// Binds a raw buffer to a binary array, computing the element ``count`` from the buffer
+    /// length.
     @inlinable public
     init(bytes:ArraySlice<UInt8>) throws
     {
         let shape:BSON.Shape = .init(length: bytes.count)
         let count:Int = try shape.expect(multipleOf: MemoryLayout<Element>.size)
         self.init( bytes: bytes, count: count)
+    }
+
+    /// Allocates a binary array of a given element count, initializing the storage to zero.
+    @inlinable public
+    init(count:Int)
+    {
+        self.init(
+            bytes: .init(repeating: 0, count: count * MemoryLayout<Element>.size),
+            count: count)
     }
 }
 extension BSON.BinaryArray:RandomAccessCollection
