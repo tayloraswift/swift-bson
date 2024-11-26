@@ -3,14 +3,13 @@ extension BSON
     /// A `BinaryArray` is a typed view of an ``ArraySlice`` as a densely-packed buffer of
     /// trivial `Element`s. It’s a good idea to use something unpretentious like a tuple of
     /// fixed-width integers for the `Element` type, to avoid unexpected padding behavior.
-
     @frozen public
     struct BinaryArray<Element> where Element:BitwiseCopyable
     {
-        public
+        @usableFromInline package
         var bytes:ArraySlice<UInt8>
         public
-        var count:Int
+        let count:Int
 
         @inlinable
         init(bytes:ArraySlice<UInt8>, count:Int)
@@ -29,7 +28,7 @@ extension BSON.BinaryArray
     {
         let shape:BSON.Shape = .init(length: bytes.count)
         let count:Int = try shape.expect(multipleOf: MemoryLayout<Element>.size)
-        self.init( bytes: bytes, count: count)
+        self.init(bytes: bytes, count: count)
     }
 
     /// Allocates a binary array of a given element count, initializing the storage to zero.
@@ -40,6 +39,12 @@ extension BSON.BinaryArray
             bytes: .init(repeating: 0, count: count * MemoryLayout<Element>.size),
             count: count)
     }
+}
+extension BSON.BinaryArray:ExpressibleByArrayLiteral
+{
+    /// Creates an empty binary array.
+    @inlinable public
+    init(arrayLiteral:Never...) { self.init(count: 0) }
 }
 extension BSON.BinaryArray:RandomAccessCollection
 {
