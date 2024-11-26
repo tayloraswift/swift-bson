@@ -7,7 +7,7 @@ extension BSON
     /// In any large MongoDB deployment, you should assume that your schema will be loaded and
     /// saved from machines with different endianness.
     @frozen public
-    struct BinaryArray<Element>
+    struct BinaryArray<Element> where Element:BitwiseCopyable
     {
         public
         let bytes:ArraySlice<UInt8>
@@ -22,13 +22,14 @@ extension BSON
         }
     }
 }
-extension BSON.BinaryArray:BSONBinaryDecodable
+extension BSON.BinaryArray
 {
     @inlinable public
-    init(bson:BSON.BinaryDecoder) throws
+    init(bytes:ArraySlice<UInt8>) throws
     {
-        self.init(bytes: bson.bytes,
-            count: try bson.shape.expect(multipleOf: MemoryLayout<Element>.size))
+        let shape:BSON.Shape = .init(length: bytes.count)
+        let count:Int = try shape.expect(multipleOf: MemoryLayout<Element>.size)
+        self.init( bytes: bytes, count: count)
     }
 }
 extension BSON.BinaryArray:RandomAccessCollection
