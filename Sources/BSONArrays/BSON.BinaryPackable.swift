@@ -14,6 +14,6 @@ extension BSON.BinaryPackable where Storage == Self, Self:FixedWidthInteger
     @inlinable public
     static func get(_ storage:Self) -> Self { .init(bigEndian: storage) }
 
-    @inlinable public consuming
-    func set() -> Self { self.bigEndian }
+    @inlinable public
+    consuming func set() -> Self { self.bigEndian }
 }
