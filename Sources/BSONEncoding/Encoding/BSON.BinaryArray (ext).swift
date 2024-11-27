@@ -1,4 +1,4 @@
-extension BSON.BinaryArray:BSONBinaryEncodable
+extension BSON.BinaryBuffer:BSONBinaryEncodable
 {
     @inlinable public
     func encode(to bson:inout BSON.BinaryEncoder)

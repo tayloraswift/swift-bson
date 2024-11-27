@@ -1,4 +1,4 @@
-extension BSON.BinaryArray:BSONBinaryDecodable
+extension BSON.BinaryBuffer:BSONBinaryDecodable
 {
     @inlinable public
     init(bson:BSON.BinaryDecoder) throws

@@ -27,6 +27,7 @@ let package:Package = .init(name: "swift-bson",
     targets: [
         .target(name: "BSON",
             dependencies: [
+                .target(name: "BSONArrays"),
                 .target(name: "BSONDecoding"),
                 .target(name: "BSONEncoding"),
             ]),
@@ -37,6 +38,12 @@ let package:Package = .init(name: "swift-bson",
             ],
             exclude: [
                 "README.md",
+            ]),
+
+        .target(name: "BSONArrays",
+            dependencies: [
+                .target(name: "BSONDecoding"),
+                .target(name: "BSONEncoding"),
             ]),
 
         .target(name: "BSONDecoding",
