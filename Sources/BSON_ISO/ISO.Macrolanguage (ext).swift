@@ -1,6 +1,14 @@
 import BSON
 import ISO
 
+extension ISO.Macrolanguage:BSON.BinaryPackable
+{
+    @inlinable public
+    static func get(_ storage:UInt16) -> Self { .init(rawValue: .get(storage)) }
+
+    @inlinable public
+    consuming func set() -> UInt16 { self.rawValue.set() }
+}
 extension ISO.Macrolanguage:BSONEncodable
 {
     @inlinable public
