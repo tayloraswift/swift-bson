@@ -24,6 +24,14 @@ extension BSON._BinaryArray:ExpressibleByArrayLiteral
         self.init(buffer: [])
     }
 }
+extension BSON._BinaryArray
+{
+    @inlinable public
+    init(count:Int)
+    {
+        self.init(buffer: .init(count: count))
+    }
+}
 extension BSON._BinaryArray:RandomAccessCollection
 {
     @inlinable public
