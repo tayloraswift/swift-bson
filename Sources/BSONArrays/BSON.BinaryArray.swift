@@ -7,27 +7,36 @@ extension BSON
     struct _BinaryArray<Element>:Sendable where Element:BinaryPackable
     {
         @usableFromInline
-        var array:BSON.BinaryBuffer<Element.Storage>
+        var buffer:BSON.BinaryBuffer<Element.Storage>
 
-        init(array:BSON.BinaryBuffer<Element.Storage>)
+        @inlinable
+        init(buffer:BSON.BinaryBuffer<Element.Storage>)
         {
-            self.array = array
+            self.buffer = buffer
         }
+    }
+}
+extension BSON._BinaryArray:ExpressibleByArrayLiteral
+{
+    @inlinable public
+    init(arrayLiteral:Never...)
+    {
+        self.init(buffer: [])
     }
 }
 extension BSON._BinaryArray:RandomAccessCollection
 {
     @inlinable public
-    var startIndex:Int { self.array.startIndex }
+    var startIndex:Int { self.buffer.startIndex }
 
     @inlinable public
-    var endIndex:Int { self.array.endIndex }
+    var endIndex:Int { self.buffer.endIndex }
 
     @inlinable public
     subscript(position:Int) -> Element
     {
-        get { .get(self.array[position]) }
-        set(new) { self.array[position] = new.set() }
+        get { .get(self.buffer[position]) }
+        set(new) { self.buffer[position] = new.set() }
     }
 }
 extension BSON._BinaryArray:BSONBinaryEncodable
@@ -35,7 +44,7 @@ extension BSON._BinaryArray:BSONBinaryEncodable
     public
     func encode(to bson:inout BSON.BinaryEncoder)
     {
-        self.array.encode(to: &bson)
+        self.buffer.encode(to: &bson)
     }
 }
 extension BSON._BinaryArray:BSONBinaryDecodable
@@ -43,6 +52,6 @@ extension BSON._BinaryArray:BSONBinaryDecodable
     public
     init(bson:BSON.BinaryDecoder) throws
     {
-        self.init(array: try .init(bson: bson))
+        self.init(buffer: try .init(bson: bson))
     }
 }
