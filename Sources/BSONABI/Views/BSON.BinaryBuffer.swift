@@ -1,10 +1,16 @@
 extension BSON
 {
-    /// A `BinaryArray` is a typed view of an ``ArraySlice`` as a densely-packed buffer of
+    @available(*, deprecated, renamed: "BinaryBuffer")
+    public
+    typealias BinaryArray = BinaryBuffer
+}
+extension BSON
+{
+    /// A `BinaryBuffer` is a typed view of an ``ArraySlice`` as a densely-packed buffer of
     /// trivial `Element`s. It’s a good idea to use something unpretentious like a tuple of
     /// fixed-width integers for the `Element` type, to avoid unexpected padding behavior.
     @frozen public
-    struct BinaryArray<Element> where Element:BitwiseCopyable
+    struct BinaryBuffer<Element> where Element:BitwiseCopyable
     {
         @usableFromInline package
         var bytes:ArraySlice<UInt8>
@@ -19,10 +25,10 @@ extension BSON
         }
     }
 }
-extension BSON.BinaryArray
+extension BSON.BinaryBuffer
 {
-    /// Binds a raw buffer to a binary array, computing the element ``count`` from the buffer
-    /// length.
+    /// Binds a raw buffer to a ``BinaryBuffer``, computing the element ``count`` from the
+    /// buffer length.
     @inlinable public
     init(bytes:ArraySlice<UInt8>) throws
     {
@@ -31,7 +37,7 @@ extension BSON.BinaryArray
         self.init(bytes: bytes, count: count)
     }
 
-    /// Allocates a binary array of a given element count, initializing the storage to zero.
+    /// Allocates a ``BinaryBuffer`` of a given element count, initializing the storage to zero.
     @inlinable public
     init(count:Int)
     {
@@ -40,13 +46,13 @@ extension BSON.BinaryArray
             count: count)
     }
 }
-extension BSON.BinaryArray:ExpressibleByArrayLiteral
+extension BSON.BinaryBuffer:ExpressibleByArrayLiteral
 {
     /// Creates an empty binary array.
     @inlinable public
     init(arrayLiteral:Never...) { self.init(count: 0) }
 }
-extension BSON.BinaryArray:RandomAccessCollection
+extension BSON.BinaryBuffer:RandomAccessCollection
 {
     @inlinable public
     var startIndex:Int { 0 }

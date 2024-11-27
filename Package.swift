@@ -2,7 +2,7 @@
 import PackageDescription
 
 let package:Package = .init(name: "swift-bson",
-    platforms: [.macOS(.v15), .iOS(.v17), .tvOS(.v17), .visionOS(.v1), .watchOS(.v10)],
+    platforms: [.macOS(.v15), .iOS(.v18), .tvOS(.v18), .visionOS(.v2), .watchOS(.v11)],
     products: [
         .library(name: "BSON", targets: ["BSON"]),
         .library(name: "BSONLegacy", targets: ["BSONLegacy"]),
@@ -27,6 +27,7 @@ let package:Package = .init(name: "swift-bson",
     targets: [
         .target(name: "BSON",
             dependencies: [
+                .target(name: "BSONArrays"),
                 .target(name: "BSONDecoding"),
                 .target(name: "BSONEncoding"),
             ]),
@@ -37,6 +38,12 @@ let package:Package = .init(name: "swift-bson",
             ],
             exclude: [
                 "README.md",
+            ]),
+
+        .target(name: "BSONArrays",
+            dependencies: [
+                .target(name: "BSONDecoding"),
+                .target(name: "BSONEncoding"),
             ]),
 
         .target(name: "BSONDecoding",
