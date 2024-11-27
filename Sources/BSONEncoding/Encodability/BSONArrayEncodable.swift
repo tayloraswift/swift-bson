@@ -3,7 +3,7 @@
 public
 protocol BSONArrayEncodable<CodingElement>:BSONBinaryEncodable
 {
-    associatedtype CodingElement //:_Trivial
+    associatedtype CodingElement:BitwiseCopyable
 }
 extension BSONArrayEncodable where Self:RandomAccessCollection<CodingElement>
 {
@@ -12,7 +12,7 @@ extension BSONArrayEncodable where Self:RandomAccessCollection<CodingElement>
     @inlinable public
     func encode(to bson:inout BSON.BinaryEncoder)
     {
-        bson.reserve(another: count * MemoryLayout<CodingElement>.size)
+        bson.reserve(another: self.count * MemoryLayout<CodingElement>.size)
 
         for trivial:CodingElement in self
         {
