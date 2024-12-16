@@ -10,7 +10,6 @@ let package:Package = .init(name: "swift-bson",
         .library(name: "BSONABI", targets: ["BSONABI"]),
 
         .library(name: "BSON_ISO", targets: ["BSON_ISO"]),
-        .library(name: "BSON_OrderedCollections", targets: ["BSON_OrderedCollections"]),
         .library(name: "BSON_UUID", targets: ["BSON_UUID"]),
     ],
     dependencies: [
@@ -21,8 +20,6 @@ let package:Package = .init(name: "swift-bson",
             from: "0.7.0")),
         .package(url: "https://github.com/tayloraswift/swift-unixtime", .upToNextMinor(
             from: "0.1.5")),
-        .package(url: "https://github.com/apple/swift-collections",
-            from: "1.1.4"),
     ],
     targets: [
         .target(name: "BSON",
@@ -71,12 +68,6 @@ let package:Package = .init(name: "swift-bson",
         .target(name: "BSONReflection",
             dependencies: [
                 .target(name: "BSON"),
-            ]),
-
-        .target(name: "BSON_OrderedCollections",
-            dependencies: [
-                .target(name: "BSON"),
-                .product(name: "OrderedCollections", package: "swift-collections"),
             ]),
 
         .target(name: "BSON_ISO",
