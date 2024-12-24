@@ -17,6 +17,12 @@ The ***swift-bson*** library is a portable, Foundation-free library for working 
 </div>
 
 
+## Tutorials
+
+- [Getting Started](https://swiftinit.org/docs/swift-bson/bson/gettingstarted)
+- [Advanced Patterns](https://swiftinit.org/docs/swift-bson/bson/advancedpatterns)
+
+
 ## Requirements
 
 The swift-bson library requires Swift 6.0 or later.
