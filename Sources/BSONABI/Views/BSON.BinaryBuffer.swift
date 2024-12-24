@@ -1,11 +1,5 @@
 extension BSON
 {
-    @available(*, deprecated, renamed: "BinaryBuffer")
-    public
-    typealias BinaryArray = BinaryBuffer
-}
-extension BSON
-{
     /// A `BinaryBuffer` is a typed view of an ``ArraySlice`` as a densely-packed buffer of
     /// trivial `Element`s. It’s a good idea to use something unpretentious like a tuple of
     /// fixed-width integers for the `Element` type, to avoid unexpected padding behavior.

@@ -4,7 +4,7 @@ import BSONEncoding
 extension BSON
 {
     @frozen public
-    struct _BinaryArray<Element>:Sendable where Element:BinaryPackable
+    struct BinaryArray<Element>:Sendable where Element:BinaryPackable
     {
         @usableFromInline
         var buffer:BSON.BinaryBuffer<Element.Storage>
@@ -16,7 +16,7 @@ extension BSON
         }
     }
 }
-extension BSON._BinaryArray:ExpressibleByArrayLiteral
+extension BSON.BinaryArray:ExpressibleByArrayLiteral
 {
     @inlinable public
     init(arrayLiteral:Never...)
@@ -24,7 +24,7 @@ extension BSON._BinaryArray:ExpressibleByArrayLiteral
         self.init(buffer: [])
     }
 }
-extension BSON._BinaryArray
+extension BSON.BinaryArray
 {
     @inlinable public
     init(count:Int)
@@ -32,7 +32,7 @@ extension BSON._BinaryArray
         self.init(buffer: .init(count: count))
     }
 }
-extension BSON._BinaryArray:RandomAccessCollection
+extension BSON.BinaryArray:RandomAccessCollection
 {
     @inlinable public
     var startIndex:Int { self.buffer.startIndex }
@@ -47,7 +47,7 @@ extension BSON._BinaryArray:RandomAccessCollection
         set(new) { self.buffer[position] = new.set() }
     }
 }
-extension BSON._BinaryArray:BSONBinaryEncodable
+extension BSON.BinaryArray:BSONBinaryEncodable
 {
     public
     func encode(to bson:inout BSON.BinaryEncoder)
@@ -55,7 +55,7 @@ extension BSON._BinaryArray:BSONBinaryEncodable
         self.buffer.encode(to: &bson)
     }
 }
-extension BSON._BinaryArray:BSONBinaryDecodable
+extension BSON.BinaryArray:BSONBinaryDecodable
 {
     public
     init(bson:BSON.BinaryDecoder) throws
