@@ -1,9 +1,15 @@
 extension BSON
 {
-    /// A field that may or may not exist in a document. This type is
-    /// the return value of ``Dictionary``’s non-optional subscript, and
-    /// is useful for obtaining structured diagnostics for “key-not-found”
-    /// scenarios.
+    /// A field that may or may not exist in a document. This type is the return value of
+    /// ``DocumentDecoder``’s non-optional subscript, and is useful for obtaining structured
+    /// diagnostics for “key-not-found” scenarios.
+    ///
+    /// The name `OptionalDecoder` is counterintuitive because you would almost always use this
+    /// type to access fields that you expect to be present. It is named as such because it does
+    /// *not* unwrap the value (it contains an ``Optional``), leaving the nil state available
+    /// for raising diagnostics.
+    ///
+    /// Compare with: ``FieldDecoder``.
     @frozen public
     struct OptionalDecoder<Key> where Key:Sendable
     {

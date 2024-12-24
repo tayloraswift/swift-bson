@@ -69,12 +69,12 @@ Below is a slightly more complex model type, `ExampleModel`, which has three sto
 The bare minimum a type needs to decode itself from BSON is a ``BSONDecodable`` conformance. Many standard library types, such as ``Int32`` and ``Int64``, are already ``BSONDecodable``.
 
 
-#### ``BSONDecodable`` and ``BSONDocumentDecodable``
+#### Decodability protocols
 
 The ``BSONDecodable`` protocol has a derived protocol named ``BSONDocumentDecodable``. Since we expect `ExampleModel` to appear as a BSON document, it is much easier to write a conformance against ``BSONDocumentDecodable`` than ``BSONDecodable``, because the former provides error handling and field indexing for free.
 
 
-#### ``BSONDocumentDecodable/CodingKey``
+#### Defining schema
 
 Unlike the Legacy API, ``BSONDocumentDecodable`` requires an explicit schema definition in the form of a ``BSONDocumentDecodable/CodingKey``. This type must be ``RawRepresentable`` and backed by a ``String``. Moreover, because it can appear in error diagnostics, it must also be ``Sendable``, as ``Error`` itself requires ``Sendable``.
 
@@ -89,6 +89,8 @@ It’s good practice to use single-letter key names in the `CodingKey` ABI for t
 
 #### Decoding fields
 
+The interface for decoding documents is the ``BSON.DocumentDecoder`` type.
+
 Types that conform to ``BSONDocumentDecodable`` must implement the ``BSONDocumentDecodable/init(bson:) [83UM7]`` requirement. This initializer receives a ``BSON.DocumentDecoder`` keyed by the `CodingKey` type you provide.
 
 To access a non-optional field, subscript the decoder with the field key and call the ``BSON.TraceableDecoder/decode(to:)`` method. This method will throw an error with an attached diagnostic trace if the field is missing or has the wrong type.
@@ -102,3 +104,44 @@ This won’t compile just yet, because the `rank` property has type `Rank`, and 
 @Snippet(id: GettingStarted, slice: EXAMPLE_MODEL_RANK_DECODABLE)
 
 Because ``Int32`` is already ``BSONDecodable``, we don’t need to write any code to satisfy the conformance requirements.
+
+
+## Encoding
+
+Once you have implemented the decoding logic, you are already two-thirds of the way to making a model type round-trippable.
+
+### Encoding with the BSON API
+
+All that’s left in this example is to conform `ExampleModel.Rank` to ``BSONEncodable``, and write the encoding logic for `ExampleModel`’s ``BSONDocumentEncodable.encode(to:) [7XKCH]`` witness.
+
+@Snippet(id: GettingStarted, slice: EXAMPLE_MODEL_RANK_ENCODABLE)
+
+
+#### Encoding fields
+
+The interface for encoding documents is the ``BSON.DocumentEncoder`` type.
+
+The library passes an instance of this type `inout` to your ``BSONDocumentEncodable/encode(to:) [7XKCH]`` witness. For maximum performance, it writes key-values pairs immediately to the BSON output stream when you assign to its subscripts. This means the order that the fields appear in the output document is determined by the order in which they were encoded in the encoding function.
+
+@Snippet(id: GettingStarted, slice: EXAMPLE_MODEL_ENCODABLE)
+
+The code looks simple, but the encoding syntax is quite powerful. When assigning to ``BSON.DocumentEncoder.subscript(_:)``’s setter, nil values become no-ops. This means that the `name` property will not be encoded if it is `nil`, which is almost always what we want.
+
+You can also get a little more creative with the encoding logic. In this example, we also elide the `rank` field if the model’s rank is `newModel`, to match the behavior of the decoding function, which infers a default rank of `newModel` if the field is missing. This could be profitable if `newModel` were a very common value for `rank`, and we wanted to save space by not encoding it.
+
+>   Tip:
+>   Avoid going overboard with model-level transformations in the encoding and decoding logic. Excessive transformations can make database queries more complex and harder to understand. You may also discover that “sensible” defaults are not so sensible after all, which could force you into a difficult schema migration down the line.
+
+
+## Putting It All Together
+
+Here’s an example of how to round-trip an instance of `ExampleModel` through the BSON API:
+
+@Snippet(id: GettingStarted, slice: PUTTING_IT_ALL_TOGETHER)
+
+When you run this code, you should see the following output:
+
+```text
+ExampleModel(id: 1, name: Optional("AAA"), rank: topModel)
+ExampleModel(id: 1, name: Optional("AAA"), rank: topModel)
+```
