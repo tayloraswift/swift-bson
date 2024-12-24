@@ -1,6 +1,7 @@
 .build
 .build.ssgc
 .build.unidoc
+.ssgc
 .vscode
 
 Benchmarks/.build
