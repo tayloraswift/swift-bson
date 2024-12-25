@@ -121,7 +121,7 @@ All that’s left in this example is to conform `ExampleModel.Rank` to ``BSONEnc
 
 The interface for encoding documents is the ``BSON.DocumentEncoder`` type.
 
-The library passes an instance of this type `inout` to your ``BSONDocumentEncodable/encode(to:) [7XKCH]`` witness. For maximum performance, it writes key-values pairs immediately to the BSON output stream when you assign to its subscripts. This means the order that the fields appear in the output document is determined by the order in which they were encoded in the encoding function.
+The library passes an instance of this type `inout` to your ``BSONDocumentEncodable/encode(to:) [7XKCH]`` witness. For maximum performance, it writes key-value pairs immediately to the BSON output stream when you assign to its subscripts. This means the order that the fields appear in the output document is determined by the order in which they were encoded in the encoding function.
 
 @Snippet(id: GettingStarted, slice: EXAMPLE_MODEL_ENCODABLE)
 
