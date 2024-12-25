@@ -19,8 +19,9 @@ The ***swift-bson*** library is a portable, Foundation-free library for working 
 
 ## Tutorials
 
-- [Getting Started](https://swiftinit.org/docs/swift-bson/bson/gettingstarted)
-- [Advanced Patterns](https://swiftinit.org/docs/swift-bson/bson/advancedpatterns)
+- [Getting Started](https://swiftinit.org/docs/swift-bson/bson/getting-started)
+- [Serialization Patterns](https://swiftinit.org/docs/swift-bson/bson/serialization-patterns)
+- [Textures and Coordinates](https://swiftinit.org/docs/swift-bson/bson/textures-and-coordinates)
 
 
 ## Requirements

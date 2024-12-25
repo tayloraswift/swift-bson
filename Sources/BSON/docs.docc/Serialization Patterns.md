@@ -1,24 +1,24 @@
-# Advanced Patterns
+# Serialization Patterns
 
 Level up your BSON encoding skills by learning these composable serialiation patterns. Internalizing these techniques will help you write more efficient and maintainable database applications by avoiding temporary allocations and reusing generic library code.
 
 
-## Delegating to Raw Representation
+## Raw Representations
 
 **Delegation to Raw Representation** is one of the most common patterns in BSON encoding. You can use it whenever a ``RawRepresentable`` type has a ``RawRepresentable/RawValue`` that is already ``BSONDecodable`` or ``BSONEncodable``.
 
-@Snippet(id: AdvancedPatterns, slice: RAW_REPRESENTATION)
+@Snippet(id: Patterns, slice: RAW_REPRESENTATION)
 
 Delegation to Raw Representation has no dedicated protocols; it is tied directly to ``BSONDecodable`` and ``BSONEncodable`` and is available whenever you conform to one of those protocols.
 
 
-## Delegating to String Representation
+## String Representations
 
 **Delegation to String Representation** is a pattern that allows you to use a type’s ``LosslessStringConvertible`` conformance to define its database representation.
 
 Here’s an example of a type that stores a logical ``String`` and ``Int`` pair, and uses a formatted `host:port` ``String`` representation for encoding and decoding:
 
-@Snippet(id: AdvancedPatterns, slice: STRING_REPRESENTATION)
+@Snippet(id: Patterns, slice: STRING_REPRESENTATION)
 
 Delegation to String Representation is not enabled by default. You must opt-in to it by conforming to the ``BSONStringDecodable`` and ``BSONStringEncodable`` protocols.
 
@@ -43,11 +43,11 @@ The interface for manual ``BSON.List`` encoding is ``BSON.ListEncoder``. The ``B
 
 Here’s an example of manual BSON list encoding, which expands every element of a ``Range`` into a list of BSON integers:
 
-@Snippet(id: AdvancedPatterns, slice: LIST_ENCODING_MANUAL)
+@Snippet(id: Patterns, slice: LIST_ENCODING_MANUAL)
 
 The ``BSON.ListEncoder`` type is a powerful interface that also allows you to encode arbitrary nested lists and documents. The example code below encodes alternating nested lists and documents within a larger list:
 
-@Snippet(id: AdvancedPatterns, slice: LIST_ENCODING_SILLY)
+@Snippet(id: Patterns, slice: LIST_ENCODING_SILLY)
 
 The JSON equivalent to the BSON it would produce would look something like this:
 
@@ -71,13 +71,13 @@ The ``BSON.ListDecoder`` type’s job is to provide a random-access intermediate
 
 You would usually use ``BSONListDecodable`` when you expect a list of a fixed size, or a length that is a multiple of some fixed stride. Here’s an example of a type `FirstAndLastName` that round-trips a pair of strings:
 
-@Snippet(id: AdvancedPatterns, slice: LIST_PAIR)
+@Snippet(id: Patterns, slice: LIST_PAIR)
 
 ### Best Practices
 
 BSON lists are essentially BSON documents with anonymous keys. The ``BSONListEncodable`` and especially ``BSONListDecodable`` protocols are best suited for schema with positionally-significant list items. However, unlike JSON, encoding with anonymous keys saves no space relative to encoding with named keys, so it just results in schema that is more brittle and harder to evolve.
 
-Some kinds of data, like arrays of RGB colors, are logically well-modeled as lists, but can be represented far more efficiently as [packed binary data](#Coordinate-Buffers).
+Some kinds of data, like arrays of RGB colors, are logically well-modeled as lists, but can be represented far more efficiently as [packed binary data](Textures-and-Coordinates).
 
 #### Prefer `Array`
 
@@ -92,22 +92,3 @@ Some Swift data structures (such as ``Set``) do not have a deterministic order.
 The swift-bson library provides a ``BSONDecodable`` implementation for ``Set`` when the element type is ``BSONDecodable``, as this saves users an array allocation when performing one-way BSON decoding. However, ``Set`` does not have a first-class ``BSONEncodable`` conformance, because it would encode itself differently every time.
 
 You should not attempt to provide this conformance yourself, as this would be terrible for caching and overall application performance, so it’s a very bad idea to round-trip instances of ``Set`` (or similar types) through your models.
-
-
-## Textures and Coordinates
-
-Coordinate buffers are a specialized use case that is nevertheless critical to master when using BSON in resource-constrained systems.
-
-### Binary Data
-
-BSON documents can embed arbitrary binary data. This is extremely useful for storing trivial repeating values like RGB colors or 3D coordinates. This can save an enormous amount of keying overhead, at the cost of making the data un-queryable, as the database will not understand your custom data format.
-
-#### Endianness
-
-Although most real-world systems are little-endian, you should always assume that your data will be read by and written from systems with varying endianness.
-
-To help you avoid making mistakes, the swift-bson library provides the ``BSON.BinaryBuffer`` and ``BSON.BinaryArray`` abstractions. The latter, which accounts for endianness, is layered on top of the former, which does not. The ``BSON.BinaryPackable`` protocol serves as the bridge between the two.
-
-### Binary Buffers
-
-A ``BSON.BinaryBuffer``

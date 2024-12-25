@@ -6,8 +6,9 @@ An umbrella module providing a BSON parser, encoder, and decoder.
 
 ### Tutorials
 
--   <doc:GettingStarted>
--   <doc:AdvancedPatterns>
+-   <doc:Getting-Started>
+-   <doc:Serialization-Patterns>
+-   <doc:Textures-and-Coordinates>
 
 
 ## Linking the BSON libraries
