@@ -3,7 +3,7 @@
 Level up your BSON encoding skills by learning these composable serialiation patterns. Internalizing these techniques will help you write more efficient and maintainable database applications by avoiding temporary allocations and reusing generic library code.
 
 
-## Delegation to Raw Representation
+## Delegating to Raw Representation
 
 **Delegation to Raw Representation** is one of the most common patterns in BSON encoding. You can use it whenever a ``RawRepresentable`` type has a ``RawRepresentable/RawValue`` that is already ``BSONDecodable`` or ``BSONEncodable``.
 
@@ -12,7 +12,7 @@ Level up your BSON encoding skills by learning these composable serialiation pat
 Delegation to Raw Representation has no dedicated protocols; it is tied directly to ``BSONDecodable`` and ``BSONEncodable`` and is available whenever you conform to one of those protocols.
 
 
-## Delegation to String Representation
+## Delegating to String Representation
 
 **Delegation to String Representation** is a pattern that allows you to use a type’s ``LosslessStringConvertible`` conformance to define its database representation.
 
@@ -77,7 +77,7 @@ You would usually use ``BSONListDecodable`` when you expect a list of a fixed si
 
 BSON lists are essentially BSON documents with anonymous keys. The ``BSONListEncodable`` and especially ``BSONListDecodable`` protocols are best suited for schema with positionally-significant list items. However, unlike JSON, encoding with anonymous keys saves no space relative to encoding with named keys, so it just results in schema that is more brittle and harder to evolve.
 
-Some kinds of data, like arrays of RGB colors, are logically well-modeled as lists, but can be represented far more efficiently as [packed binary data](#Arrays-of-Coordinates).
+Some kinds of data, like arrays of RGB colors, are logically well-modeled as lists, but can be represented far more efficiently as [packed binary data](#Coordinate-Buffers).
 
 #### Prefer `Array`
 
@@ -93,6 +93,21 @@ The swift-bson library provides a ``BSONDecodable`` implementation for ``Set`` w
 
 You should not attempt to provide this conformance yourself, as this would be terrible for caching and overall application performance, so it’s a very bad idea to round-trip instances of ``Set`` (or similar types) through your models.
 
-## Arrays of Coordinates
 
-TODO
+## Textures and Coordinates
+
+Coordinate buffers are a specialized use case that is nevertheless critical to master when using BSON in resource-constrained systems.
+
+### Binary Data
+
+BSON documents can embed arbitrary binary data. This is extremely useful for storing trivial repeating values like RGB colors or 3D coordinates. This can save an enormous amount of keying overhead, at the cost of making the data un-queryable, as the database will not understand your custom data format.
+
+#### Endianness
+
+Although most real-world systems are little-endian, you should always assume that your data will be read by and written from systems with varying endianness.
+
+To help you avoid making mistakes, the swift-bson library provides the ``BSON.BinaryBuffer`` and ``BSON.BinaryArray`` abstractions. The latter, which accounts for endianness, is layered on top of the former, which does not. The ``BSON.BinaryPackable`` protocol serves as the bridge between the two.
+
+### Binary Buffers
+
+A ``BSON.BinaryBuffer``
