@@ -2,6 +2,14 @@
 
 An umbrella module providing a BSON parser, encoder, and decoder.
 
+## Topics
+
+### Tutorials
+
+-   <doc:GettingStarted>
+-   <doc:AdvancedPatterns>
+
+
 ## Linking the BSON libraries
 
 This module re-exports the ``BSONABI``, ``BSONEncoding``, ``BSONDecoding``, and ``BSONArrays`` modules. Importing them directly is discouraged.
