@@ -21,8 +21,8 @@ struct Host:LosslessStringConvertible,
 
     init?(_ string:String)
     {
-        if  let i:String.Index = string.firstIndex(of:":"),
-            let port:Int = .init(string[string.index(after:i)...])
+        if  let i:String.Index = string.firstIndex(of: ":"),
+            let port:Int = .init(string[string.index(after: i)...])
         {
             self.name = String.init(string[..<i])
             self.port = port
