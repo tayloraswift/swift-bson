@@ -37,7 +37,7 @@ This means that a document may contain corrupted subtrees. Indeed, the entire do
 BSON is a serialization format, so when you receive BSON, you almost always want to decode it into a **model type**.
 
 
-### Decoding with the Legacy API
+### Decoding with Codable (Legacy API)
 
 Many Swift users are familiar with the ``Decodable`` protocol, which is a format-agnostic deserialization system native to the Swift standard library. The swift-bson library provides compatibility shims for the ``Decodable`` protocol in the ``BSONLegacy`` module.
 
@@ -58,7 +58,7 @@ BooleanContainer(b: true)
 The Legacy API does not currently support encoding.
 
 
-### Decoding with the BSON API
+## Decoding with the BSON API
 
 The format-agnostic ``Decodable`` protocol has well-known performance limitations, so the swift-bson library provides a set of BSON-specific serialization protocols for high-throughput use cases.
 
@@ -69,12 +69,12 @@ Below is a slightly more complex model type, `ExampleModel`, which has three sto
 The bare minimum a type needs to decode itself from BSON is a ``BSONDecodable`` conformance. Many standard library types, such as ``Int32`` and ``Int64``, are already ``BSONDecodable``.
 
 
-#### Decodability protocols
+### Decodability protocols
 
 The ``BSONDecodable`` protocol has a derived protocol named ``BSONDocumentDecodable``. Since we expect `ExampleModel` to appear as a BSON document, it is much easier to write a conformance against ``BSONDocumentDecodable`` than ``BSONDecodable``, because the former provides error handling and field indexing for free.
 
 
-#### Defining schema
+### Defining schema
 
 Unlike the Legacy API, ``BSONDocumentDecodable`` requires an explicit schema definition in the form of a ``BSONDocumentDecodable/CodingKey``. This type must be ``RawRepresentable`` and backed by a ``String``. Moreover, because it can appear in error diagnostics, it must also be ``Sendable``, as ``Error`` itself requires ``Sendable``.
 
@@ -87,7 +87,7 @@ It’s good practice to use single-letter key names in the `CodingKey` ABI for t
 2.  Single-letter keys are more resilient to schema changes, as you can change the property names in the model type without breaking the database ABI.
 
 
-#### Decoding fields
+### Decoding fields
 
 The interface for decoding documents is the ``BSON.DocumentDecoder`` type.
 
@@ -106,18 +106,16 @@ This won’t compile just yet, because the `rank` property has type `Rank`, and 
 Because ``Int32`` is already ``BSONDecodable``, we don’t need to write any code to satisfy the conformance requirements.
 
 
-## Encoding
+## Encoding with the BSON API
 
 Once you have implemented the decoding logic, you are already two-thirds of the way to making a model type round-trippable.
-
-### Encoding with the BSON API
 
 All that’s left in this example is to conform `ExampleModel.Rank` to ``BSONEncodable``, and write the encoding logic for `ExampleModel`’s ``BSONDocumentEncodable.encode(to:) [7XKCH]`` witness.
 
 @Snippet(id: GettingStarted, slice: EXAMPLE_MODEL_RANK_ENCODABLE)
 
 
-#### Encoding fields
+### Encoding fields
 
 The interface for encoding documents is the ``BSON.DocumentEncoder`` type.
 
