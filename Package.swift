@@ -13,13 +13,13 @@ let package:Package = .init(name: "swift-bson",
         .library(name: "BSON_UUID", targets: ["BSON_UUID"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/tayloraswift/swift-grammar", .upToNextMinor(
-            from: "0.4.1")),
+        .package(url: "https://github.com/tayloraswift/swift-grammar",
+            from: "0.4.1"),
 
-        .package(url: "https://github.com/tayloraswift/swift-hash", .upToNextMinor(
-            from: "0.7.0")),
-        .package(url: "https://github.com/tayloraswift/swift-unixtime", .upToNextMinor(
-            from: "0.1.5")),
+        .package(url: "https://github.com/tayloraswift/swift-hash",
+            from: "0.7.0"),
+        .package(url: "https://github.com/tayloraswift/swift-unixtime",
+            from: "0.2.0"),
     ],
     targets: [
         .target(name: "BSON",
