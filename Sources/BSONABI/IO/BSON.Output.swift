@@ -21,7 +21,7 @@ extension BSON
         ///
         /// The size hint is only effective if `Destination` provides a real,
         /// non-defaulted witness for
-        /// ``RangeReplaceableCollection.reserveCapacity(_:) [2YKV1]``.
+        /// ``RangeReplaceableCollection.reserveCapacity(_:) [requirement]``.
         @inlinable public
         init(capacity:Int)
         {

@@ -16,7 +16,7 @@ extension BSONEncodable where Self:BSONRepresentable, BSONRepresentation:BSONEnc
 }
 extension BSONEncodable where Self:RawRepresentable, RawValue:BSONEncodable
 {
-    /// Returns the ``encode(to:) [7NT06]`` witness of this type’s
+    /// Returns the ``encode(to:) [requirement]`` witness of this type’s
     /// ``RawRepresentable/rawValue``.
     @inlinable public
     func encode(to field:inout BSON.FieldEncoder)
