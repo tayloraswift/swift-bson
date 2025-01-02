@@ -91,7 +91,7 @@ It’s good practice to use single-letter key names in the `CodingKey` ABI for t
 
 The interface for decoding documents is the ``BSON.DocumentDecoder`` type.
 
-Types that conform to ``BSONDocumentDecodable`` must implement the ``BSONDocumentDecodable/init(bson:) [83UM7]`` requirement. This initializer receives a ``BSON.DocumentDecoder`` keyed by the `CodingKey` type you provide.
+Types that conform to ``BSONDocumentDecodable`` must implement the ``BSONDocumentDecodable/init(bson:) [requirement]`` requirement. This initializer receives a ``BSON.DocumentDecoder`` keyed by the `CodingKey` type you provide.
 
 To access a non-optional field, subscript the decoder with the field key and call the ``BSON.TraceableDecoder/decode(to:)`` method. This method will throw an error with an attached diagnostic trace if the field is missing or has the wrong type.
 
@@ -110,7 +110,7 @@ Because ``Int32`` is already ``BSONDecodable``, we don’t need to write any cod
 
 Once you have implemented the decoding logic, you are already two-thirds of the way to making a model type round-trippable.
 
-All that’s left in this example is to conform `ExampleModel.Rank` to ``BSONEncodable``, and write the encoding logic for `ExampleModel`’s ``BSONDocumentEncodable.encode(to:) [7XKCH]`` witness.
+All that’s left in this example is to conform `ExampleModel.Rank` to ``BSONEncodable``, and write the encoding logic for `ExampleModel`’s ``BSONDocumentEncodable.encode(to:) [requirement]`` witness.
 
 @Snippet(id: GettingStarted, slice: EXAMPLE_MODEL_RANK_ENCODABLE)
 
@@ -119,7 +119,7 @@ All that’s left in this example is to conform `ExampleModel.Rank` to ``BSONEnc
 
 The interface for encoding documents is the ``BSON.DocumentEncoder`` type.
 
-The library passes an instance of this type `inout` to your ``BSONDocumentEncodable/encode(to:) [7XKCH]`` witness. For maximum performance, it writes key-value pairs immediately to the BSON output stream when you assign to its subscripts. This means the order that the fields appear in the output document is determined by the order in which they were encoded in the encoding function.
+The library passes an instance of this type `inout` to your ``BSONDocumentEncodable/encode(to:) [requirement]`` witness. For maximum performance, it writes key-value pairs immediately to the BSON output stream when you assign to its subscripts. This means the order that the fields appear in the output document is determined by the order in which they were encoded in the encoding function.
 
 @Snippet(id: GettingStarted, slice: EXAMPLE_MODEL_ENCODABLE)
 

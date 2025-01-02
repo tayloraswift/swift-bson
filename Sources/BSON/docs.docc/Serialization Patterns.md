@@ -39,7 +39,7 @@ The principal benefit of ``BSONListEncodable`` is that it avoids encoding many t
 
 Many applications will converge on ``Sequence``-powered encoding, as this involves the least amount of total code since your Swift logic likely also wants to use sequences. However, it is also possible to encode BSON lists manually.
 
-The interface for manual ``BSON.List`` encoding is ``BSON.ListEncoder``. The ``BSONListEncodable.encode(to:) [8W2XP]`` witness you provide receives an instance of this type.
+The interface for manual ``BSON.List`` encoding is ``BSON.ListEncoder``. The ``BSONListEncodable.encode(to:) [requirement]`` witness you provide receives an instance of this type.
 
 Here’s an example of manual BSON list encoding, which expands every element of a ``Range`` into a list of BSON integers:
 

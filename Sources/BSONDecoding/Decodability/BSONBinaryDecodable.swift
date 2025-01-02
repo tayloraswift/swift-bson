@@ -9,7 +9,7 @@ protocol BSONBinaryDecodable:BSONDecodable
 extension BSONBinaryDecodable
 {
     /// Attempts to cast the given variant value to a binary array, and then
-    /// delegates to this type’s ``init(bson:) [5T44S]`` witness.
+    /// delegates to this type’s ``init(bson:) [requirement]`` witness.
     @inlinable public
     init(bson:BSON.AnyValue) throws
     {
