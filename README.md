@@ -17,6 +17,44 @@ The ***swift-bson*** library is a portable, Foundation-free library for working 
 </div>
 
 
+## What is BSON?
+
+[BSON](https://bsonspec.org/) is a general-purpose binary serialization format that is a superset of [JSON](https://www.json.org/). Parsing BSON requires much less memory than parsing JSON, and the format is traversable, which makes it possible to extract individual fields nested deep within a BSON document without actually parsing the entire file.
+
+BSON was originally developed by [MongoDB](https://www.mongodb.com/), for which it serves as its native data format. However, the file format itself is not tied to MongoDB, and can be used in any system that requires a high-performance, low-memory serialization format.
+
+
+## Why do I need this library?
+
+If you are using [MongoKitten](https://github.com/orlandos-nl/MongoKitten), your MongoDB driver already includes a BSON parser based on the standard library’s [`Codable`](https://swiftinit.org/docs/swift/swift/codable) system, which has the advantage of generating much of the deserialization code for you automatically. However, `Codable` has well-known performance limitations, and is not suitable for high-throughput use cases.
+
+Another reason to use this library is that it is portable and has few dependencies. BSON parsers provided by MongoDB drivers have dependencies on networking primitives such as [`ByteBuffer`](https://swiftinit.org/docs/swift-nio/niocore/bytebuffer), which requires you to link the [SwiftNIO library](https://github.com/apple/swift-nio). For applications that simply use BSON as a storage format, this may not be desirable.
+
+
+## Is it worth the effort?
+
+Learning this library will enable you to use a high-performance binary serialization format across a wide range of platforms. The library is small, written in pure Swift, and organized around a few key patterns that emphasize maintainability in large codebases.
+
+Although swift-bson cannot synthesize serialization code for you, its idioms are predictable and easily “paintable” by LLMs such as GitHub Copilot.
+
+
+## Should I really be using BSON?
+
+BSON is not for everyone. The rationales below are *not* good reasons to adopt BSON, at least by themselves.
+
+
+### Saving disk space
+
+BSON will save memory when parsing, but in typical use cases, a BSON file will occupy a similar amount of space as an equivalent JSON file, and offer a similar compression ratio.
+
+
+### Serving to the web
+
+BSON is generally considered a server side format, and there are few compelling reasons to synthesize it for the sole purpose of serving content to browsers.
+
+That said, [JavaScript libraries](https://www.npmjs.com/package/bson) do exist for parsing BSON, so it is possible to use it on the client side. One good reason to do this is if you are storing BSON objects as static resources accessible from a CDN, and want clients to be able to download the BSON from the CDN instead of converting it dynamically to JSON via your HTTP server.
+
+
 ## Tutorials
 
 - [Getting Started](https://swiftinit.org/docs/swift-bson/bson/getting-started)
