@@ -31,13 +31,6 @@ If you are using [MongoKitten](https://github.com/orlandos-nl/MongoKitten), your
 Another reason to use this library is that it is portable and has few dependencies. BSON parsers provided by MongoDB drivers have dependencies on networking primitives such as [`ByteBuffer`](https://swiftinit.org/docs/swift-nio/niocore/bytebuffer), which requires you to link the [SwiftNIO library](https://github.com/apple/swift-nio). For applications that simply use BSON as a storage format, this may not be desirable.
 
 
-## Is it worth the effort?
-
-Learning this library will enable you to use a high-performance binary serialization format across a wide range of platforms. The library is small, written in pure Swift, and organized around a few key patterns that emphasize maintainability in large codebases.
-
-Although swift-bson cannot synthesize serialization code for you, its idioms are predictable and easily “paintable” by LLMs such as GitHub Copilot.
-
-
 ## Should I really be using BSON?
 
 BSON is not for everyone. The rationales below are *not* good reasons to adopt BSON, at least by themselves.
@@ -54,6 +47,65 @@ BSON is generally considered a server side format, and there are few compelling 
 
 That said, [JavaScript libraries](https://www.npmjs.com/package/bson) do exist for parsing BSON, so it is possible to use it on the client side. One good reason to do this is if you are storing BSON objects as static resources accessible from a CDN, and want clients to be able to download the BSON from the CDN instead of converting it dynamically to JSON via your HTTP server.
 
+
+## Is it worth the effort?
+
+Learning this library will enable you to use a high-performance binary serialization format across a wide range of platforms. The library is small, written in pure Swift, and organized around a few key patterns that emphasize maintainability in large codebases.
+
+Although swift-bson cannot synthesize serialization code for you, its idioms are predictable and easily “paintable” by LLMs such as GitHub Copilot.
+
+
+## What does the code look like?
+
+In a “realistic” codebase, a BSON model type looks like this:
+
+```swift
+struct ExampleModel:BSONDocumentEncodable, BSONDocumentDecodable
+{
+    let id:Int64
+    let name:String?
+    let rank:Rank
+
+    /// A custom enum type.
+    enum Rank:Int32, BSONEncodable, BSONDecodable
+    {
+        case newModel
+        case risingStar
+        case aspiringModel
+        case fashionista
+        case glamourista
+        case fashionMaven
+        case runwayQueen
+        case trendSetter
+        case runwayDiva
+        case topModel
+    }
+
+    /// The schema definition.
+    enum CodingKey:String, Sendable
+    {
+        case id = "_id" // Chosen for compatibility with MongoDB
+        case name = "D"
+        case rank = "R"
+    }
+
+    /// The serialization logic.
+    func encode(to bson:inout BSON.DocumentEncoder<CodingKey>)
+    {
+        bson[.id] = self.id
+        bson[.name] = self.name
+        bson[.rank] = self.rank == .newModel ? nil : self.rank
+    }
+
+    /// The deserialization logic.
+    init(bson:BSON.DocumentDecoder<CodingKey>) throws
+    {
+        self.id = try bson[.id].decode()
+        self.name = try bson[.name]?.decode()
+        self.rank = try bson[.rank]?.decode() ?? .newModel
+    }
+}
+```
 
 ## Tutorials
 
