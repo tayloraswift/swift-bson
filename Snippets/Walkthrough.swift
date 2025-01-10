@@ -50,7 +50,7 @@ struct ExampleModel
         case glamourista
         case fashionMaven
         case runwayQueen
-        case trendsetter
+        case trendSetter
         case runwayDiva
         case topModel
     }

@@ -109,8 +109,9 @@ struct ExampleModel:BSONDocumentEncodable, BSONDocumentDecodable
 
 ## Tutorials
 
-- [Getting Started](https://swiftinit.org/docs/swift-bson/bson/getting-started)
-- [Serialization Patterns](https://swiftinit.org/docs/swift-bson/bson/serialization-patterns)
+- [Usage Examples](https://swiftinit.org/docs/swift-bson/bson/examples)
+- [Protocols Explained](https://swiftinit.org/docs/swift-bson/bson/walkthrough)
+- [Advanced Serialization Patterns](https://swiftinit.org/docs/swift-bson/bson/serialization-patterns)
 - [Textures and Coordinates](https://swiftinit.org/docs/swift-bson/bson/textures-and-coordinates)
 
 

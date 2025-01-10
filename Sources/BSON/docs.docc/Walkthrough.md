@@ -1,35 +1,6 @@
-# Getting started with BSON
+# BSON Decoding and Encoding, Explained
 
-This article covers some of the basic patterns for working with BSON in Swift.
-
-
-## Concepts
-
-BSON, like JSON, is a recursive data structure with two native **container** types: ``BSON/Document`` (or object) and ``BSON/List`` (or array). A complete BSON “file” is generally understood to consist of a single top-level container, usually a document.
-
-
-### Document Structure
-
-When embedded as subtrees, BSON containers are bracketed by a **header** and a **trailing null byte**. The header is always four bytes long. The headers and trailers surrounding **nested containers** are needed for efficiently traversal of the BSON syntax tree, but don’t have any functional significance at the top level, so we usually strip them from the root node.
-
-The snippet below contains a full BSON document — including the header and trailing null byte — in the variable `full`. The ``BSON/Document.init(bytes:)`` initializer expects a bare document without the header or trailing null byte, so we slice `full` before passing it to the initializer.
-
-@Snippet(id: GettingStarted, slice: DOCUMENT_STRUCTURE)
-
-If we print the document, we see it contains a single key-value pair, `b: true`.
-
-```text
-{
-    $0[b] = true
-}
-```
-
-
-### No Eager Parsing
-
-Unlike JSON parsing, BSON parsing is always lazy. This saves a tremendous amount of memory when decoding data from BSON. Thus, ``BSON/Document`` is nothing but a thin wrapper around a byte buffer.
-
-This means that a document may contain corrupted subtrees. Indeed, the entire document may be corrupted, and this will not raise an error until the actual decoding takes place. If the corrupted fields are never accessed by a ``Decoder``, no error will be raised.
+This article walks through the process of implementing ``BSONDocumentDecodable`` and ``BSONDocumentEncodable`` conformances for a model type in detail, and explains the rationale behind library’s design decisions.
 
 
 ## Decoding
@@ -43,11 +14,11 @@ Many Swift users are familiar with the ``Decodable`` protocol, which is a format
 
 Here’s an example definition of a ``Decodable`` model type named `BooleanContainer`:
 
-@Snippet(id: GettingStarted, slice: LEGACY_DECODABLE)
+@Snippet(id: Walkthrough, slice: LEGACY_DECODABLE)
 
 Here’s how you would decode an instance of `BooleanContainer` from a BSON Document:
 
-@Snippet(id: GettingStarted, slice: LEGACY_DECODING)
+@Snippet(id: Walkthrough, slice: LEGACY_DECODING)
 
 And here’s the output you would see if you printed the decoded instance:
 
@@ -64,7 +35,7 @@ The format-agnostic ``Decodable`` protocol has well-known performance limitation
 
 Below is a slightly more complex model type, `ExampleModel`, which has three stored properties: `id`, `name`, and `rank`. The `name` property is optional, and the `rank` property is a custom enum type with a ``RawRepresentable/RawValue`` of type ``Int32``.
 
-@Snippet(id: GettingStarted, slice: EXAMPLE_MODEL_DEFINITION)
+@Snippet(id: Walkthrough, slice: EXAMPLE_MODEL_DEFINITION)
 
 The bare minimum a type needs to decode itself from BSON is a ``BSONDecodable`` conformance. Many standard library types, such as ``Int32`` and ``Int64``, are already ``BSONDecodable``.
 
@@ -78,7 +49,7 @@ The ``BSONDecodable`` protocol has a derived protocol named ``BSONDocumentDecoda
 
 Unlike the Legacy API, ``BSONDocumentDecodable`` requires an explicit schema definition in the form of a ``BSONDocumentDecodable/CodingKey``. This type must be ``RawRepresentable`` and backed by a ``String``. Moreover, because it can appear in error diagnostics, it must also be ``Sendable``, as ``Error`` itself requires ``Sendable``.
 
-@Snippet(id: GettingStarted, slice: EXAMPLE_MODEL_CODING_KEY)
+@Snippet(id: Walkthrough, slice: EXAMPLE_MODEL_CODING_KEY)
 
 It’s good practice to use single-letter key names in the `CodingKey` ABI for two reasons.
 
@@ -97,11 +68,11 @@ To access a non-optional field, subscript the decoder with the field key and cal
 
 To access an optional field, chain the subscript with the optional chaining operator (`?`) before calling ``BSON.TraceableDecoder/decode(to:)``.
 
-@Snippet(id: GettingStarted, slice: EXAMPLE_MODEL_DECODABLE)
+@Snippet(id: Walkthrough, slice: EXAMPLE_MODEL_DECODABLE)
 
 This won’t compile just yet, because the `rank` property has type `Rank`, and we haven’t conformed it to ``BSONDecodable`` yet. So the last step is to make `Rank` conform to ``BSONDecodable`` by leveraging its existing ``RawRepresentable`` conformance.
 
-@Snippet(id: GettingStarted, slice: EXAMPLE_MODEL_RANK_DECODABLE)
+@Snippet(id: Walkthrough, slice: EXAMPLE_MODEL_RANK_DECODABLE)
 
 Because ``Int32`` is already ``BSONDecodable``, we don’t need to write any code to satisfy the conformance requirements.
 
@@ -112,7 +83,7 @@ Once you have implemented the decoding logic, you are already two-thirds of the 
 
 All that’s left in this example is to conform `ExampleModel.Rank` to ``BSONEncodable``, and write the encoding logic for `ExampleModel`’s ``BSONDocumentEncodable.encode(to:) [requirement]`` witness.
 
-@Snippet(id: GettingStarted, slice: EXAMPLE_MODEL_RANK_ENCODABLE)
+@Snippet(id: Walkthrough, slice: EXAMPLE_MODEL_RANK_ENCODABLE)
 
 
 ### Encoding fields
@@ -121,7 +92,7 @@ The interface for encoding documents is the ``BSON.DocumentEncoder`` type.
 
 The library passes an instance of this type `inout` to your ``BSONDocumentEncodable/encode(to:) [requirement]`` witness. For maximum performance, it writes key-value pairs immediately to the BSON output stream when you assign to its subscripts. This means the order that the fields appear in the output document is determined by the order in which they were encoded in the encoding function.
 
-@Snippet(id: GettingStarted, slice: EXAMPLE_MODEL_ENCODABLE)
+@Snippet(id: Walkthrough, slice: EXAMPLE_MODEL_ENCODABLE)
 
 The code looks simple, but the encoding syntax is quite powerful. When assigning to ``BSON.DocumentEncoder.subscript(_:)``’s setter, nil values become no-ops. This means that the `name` property will not be encoded if it is `nil`, which is almost always what we want.
 
@@ -135,7 +106,7 @@ You can also get a little more creative with the encoding logic. In this example
 
 Here’s an example of how to round-trip an instance of `ExampleModel` through the BSON API:
 
-@Snippet(id: GettingStarted, slice: PUTTING_IT_ALL_TOGETHER)
+@Snippet(id: Walkthrough, slice: PUTTING_IT_ALL_TOGETHER)
 
 When you run this code, you should see the following output:
 
