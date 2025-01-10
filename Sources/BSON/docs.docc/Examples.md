@@ -63,7 +63,6 @@ The library provides conformances for a number of primitives.
 | Primitive | Encodable? | Decodable? |
 | --------- | ---------- | ---------- |
 | ``Bool`` | ✓ | ✓ |
-| ``Int`` | ✓ | ✓ |
 | ``Int32`` | ✓ | ✓ |
 | ``Int64`` | ✓ | ✓ |
 | ``Double`` | ✓ | ✓ |
@@ -80,22 +79,27 @@ The library provides conformances for a number of primitives.
 Prefer ``UnixMillisecond`` over ``BSON.Timestamp`` when representing dates.
 
 
-### Integers
+### Integers and Floats
 
-Although not strictly primitives, the library provides conformances for all Swift integer types. They are round-trippable, but it is not recommended to query on fields of these types, as they will be represented as ``Int32`` or ``Int64`` and MongoDB may sort them differently than you expect.
+Although they are not all primitives, the library provides ``BSONDecodable`` conformances for all Swift integer types.
 
-``Float`` is decodable, but there is rarely any point in encoding it instead of ``Double``, as both will occupy the same amount of space.
+Integers of bit width less than 32 bits are round-trippable, but they will be represented as ``Int32`` in the database, so there is no storage benefit to using them.
 
 | Primitive | Encodable? | Decodable? |
 | --------- | ---------- | ---------- |
+| ``Int`` | ✓ | ✓ |
 | ``Int8`` | ✓ | ✓ |
 | ``Int16`` | ✓ | ✓ |
-| ``UInt`` | ✓ | ✓ |
 | ``UInt8`` | ✓ | ✓ |
 | ``UInt16`` | ✓ | ✓ |
-| ``UInt32`` | ✓ | ✓ |
-| ``UInt64`` | ✓ | ✓ |
+| ``UInt32`` |   | ✓ |
+| ``UInt64`` |   | ✓ |
+| ``UInt`` |   | ✓ |
 | ``Float`` |   | ✓ |
+
+It is generally not a good idea to use ``UInt32``, ``UInt64``, or ``UInt`` in BSON schema. Unsigned integers can be encoded losslessly as their respective signed integer types, but they will sort incorrectly in MongoDB.
+
+Similarly, ``Float`` is decodable, but not round-trippable. This is an inherent characteristic of IEEE-754 floating-point numbers, one example of which is `sNaN(0x1)` which will decode to `NaN(0x1)` if converted to ``Double``.
 
 The library also provides overlays for the dimensional types from the ``UnixTime`` module.
 
@@ -113,11 +117,11 @@ As a natural extension of the ``String`` primitive, the library provides error-h
 
 | Primitive | Encodable? | Decodable? |
 | --------- | ---------- | ---------- |
-| ``Substring`` | ✓ |   |
+| ``Substring`` | ✓ | ✓ |
 | ``Character`` | ✓ | ✓ |
 | ``Unicode.Scalar`` | ✓ | ✓ |
 
-``Substring`` is encode-only because there is generally no performance benefit in decoding to ``Substring`` instead of ``String``, as both will involve copying the underlying storage.
+There is no performance benefit to decoding ``Substring`` instead of ``String``, as both will involve copying the underlying storage. However, using ``Substring`` over ``String`` may save some applications a buffer copy on the encoding side.
 
 
 ### Generics
