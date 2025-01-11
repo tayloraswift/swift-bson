@@ -71,21 +71,35 @@ struct ModelWithList:BSONDocumentEncodable, BSONDocumentDecodable
     }
 }
 
-//  snippet.MODEL_DICTIONARY
-struct ModelWithDictionary:BSONDocumentDecodable
+//  snippet.MODEL_UNORDERED
+struct ModelWithCollections:BSONDocumentEncodable, BSONDocumentDecodable
 {
     let x:[BSON.Key: Int32]
+    let y:Set<Double>
 
     //  snippet.hide
     enum CodingKey:String, Sendable
     {
         case x
+        case y
     }
     //  snippet.show
 
+    func encode(to bson:inout BSON.DocumentEncoder<CodingKey>)
+    {
+        bson[.x] = self.x.isEmpty ? nil : self.x.unordered
+        bson[.y] = self.y.isEmpty ? nil : self.y.unordered
+    }
+
     init(bson:BSON.DocumentDecoder<CodingKey>) throws
     {
-        self.x = try bson[.x]?.decode() ?? [:]
+        self.x = try bson[.x]?.decode(
+            as: Dictionary<BSON.Key, Int32>.UnorderedItems.self,
+            with: \.dictionary) ?? [:]
+
+        self.y = try bson[.y]?.decode(
+            as: Set<Double>.UnorderedElements.self,
+            with: \.set) ?? []
     }
 }
 

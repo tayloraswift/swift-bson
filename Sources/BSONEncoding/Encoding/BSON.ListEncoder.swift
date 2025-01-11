@@ -31,19 +31,25 @@ extension BSON.ListEncoder:BSON.Encoder
 }
 extension BSON.ListEncoder
 {
+    @inlinable public
+    subscript(_:(Index) -> Void) -> BSON.FieldEncoder
+    {
+        _read
+        {
+            yield  self.output[with: .init(index: self.count)]
+        }
+        _modify
+        {
+            defer { self.count += 1 }
+            yield &self.output[with: .init(index: self.count)]
+        }
+    }
+
+    @available(*, deprecated, renamed: "subscript(_:)")
     @inlinable public mutating
     func append(with encode:(inout BSON.FieldEncoder) -> ())
     {
-        encode(&self.output[with: .init(index: self.count)])
-        self.count += 1
-    }
-}
-extension BSON.ListEncoder
-{
-    @inlinable mutating
-    func append(_ value:some BSONEncodable)
-    {
-        self.append(with: value.encode(to:))
+        encode(&self[+])
     }
 }
 extension BSON.ListEncoder
@@ -56,24 +62,18 @@ extension BSON.ListEncoder
     subscript<Encodable>(_:(Index) -> Void) -> Encodable? where Encodable:BSONEncodable
     {
         get { nil }
-        set (value)
-        {
-            if  let value:Encodable
-            {
-                self.append(value)
-            }
-        }
+        set (value) { value?.encode(to: &self[+]) }
     }
 
     @inlinable public mutating
     func callAsFunction(_ yield:(inout BSON.ListEncoder) -> ())
     {
-        self.append { yield(&$0[as: BSON.ListEncoder.self]) }
+        yield(&self[+][as: BSON.ListEncoder.self])
     }
     @inlinable public mutating
     func callAsFunction<CodingKey>(_:CodingKey.Type = CodingKey.self,
         _ yield:(inout BSON.DocumentEncoder<CodingKey>) -> ())
     {
-        self.append { yield(&$0[as: BSON.DocumentEncoder<CodingKey>.self]) }
+        yield(&self[+][as: BSON.DocumentEncoder<CodingKey>.self])
     }
 }

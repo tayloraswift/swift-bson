@@ -1,6 +1,6 @@
 # BSON Usage Examples
 
-Using BSON in production generally consists of three kinds of tasks: 1) Defining root types that model the documents you want to store as BSON, 2) Defining reusable supporting types to model fields in other types and 3) Actually encoding and decoding BSON documents to and from binary data.
+Using BSON in production generally consists of three kinds of tasks: defining root types that model the documents you want to store as BSON, defining reusable supporting types to model fields in other types, and actually encoding and decoding BSON documents to and from binary data.
 
 
 ## Modeling Documents
@@ -29,18 +29,25 @@ Native Swift arrays will encode themselves as BSON lists. Some applications find
 @Snippet(id: Examples, slice: MODEL_LIST)
 
 
-### Dictionaries
+### Sets and Dictionaries
 
-Decoding ``Dictionary`` from BSON is an anti-pattern, but if you must, you can decode a dictionary with a key type of ``BSON.Key`` and a value type that conforms to ``BSONDecodable``.
+For many applications, serializing ``Dictionary`` is problematic because its key-value pairs do not have a deterministic order. This is bad for caching. ``Set`` suffers from a similar problem.
 
-@Snippet(id: Examples, slice: MODEL_DICTIONARY)
+Most people who want to encode a dictionary actually want to encode a nested document instead. However, if you really do want to store a dictionary, you can use the ``Dictionary.UnorderedItems`` type, which you can obtain from the ``Dictionary.unordered`` computed property.
 
-Encoding ``Dictionary`` is not supported by default, as its key-value pairs cannot be efficiently encoded in a deterministic order.
+To store a set, use ``Set.UnorderedElements``, which you can obtain from the ``Set.unordered`` computed property.
 
-Most people who want to encode a dictionary actually want to encode a nested document instead.
+@Snippet(id: Examples, slice: MODEL_UNORDERED)
+
+The ``Dictionary.UnorderedItems`` is only available when the dictionary’s key type conforms to ``BSON.Keyspace``. This protocol refines ``RawRepresentable``, and imposes the additional semantic requirement that the ``RawRepresentable.rawValue`` string must not contain null bytes.
+
+>   Important:
+>   Returning a string with null bytes from ``BSON.Keyspace.rawValue`` will crash at runtime, because null bytes in document keys can be exploited to perform SQL injection attacks against MongoDB.
+
+Note that ``Dictionary`` actually does have a ``BSONEncodable`` conformance, which is available when `Value == Never`. This allows you to express empty BSON documents as `[:]` literals, which are meaningful in the MongoDB query language.
 
 
-### Nested Documents and Lists
+### Nested Documents
 
 Any type that conforms to ``BSONEncodable`` and ``BSONDecodable`` can be used as a field in another type. Since ``BSONDocumentEncodable`` and ``BSONDocumentDecodable`` refine those respective protocols, this means any BSON model type can be used as a field in another BSON model type.
 
@@ -124,18 +131,6 @@ As a natural extension of the ``String`` primitive, the library provides error-h
 There is no performance benefit to decoding ``Substring`` instead of ``String``, as both will involve copying the underlying storage. However, using ``Substring`` over ``String`` may save some applications a buffer copy on the encoding side.
 
 
-### Generics
-
-``Optional`` and ``Array`` are round-trippable if their type arguments satisfy the same constraints. ``Dictionary`` and ``Set`` are decode-only, as they lack deterministic order.
-
-| Primitive | Encodable? | Decodable? |
-| --------- | ---------- | ---------- |
-| ``Optional`` | ✓ | ✓ |
-| ``Array`` | ✓ | ✓ |
-| ``Dictionary`` |   | ✓ |
-| ``Set`` |   | ✓ |
-
-
 ### Abstractions
 
 ``Never`` is abstractly round-trippable, which is useful in generic contexts.
@@ -172,3 +167,31 @@ Here’s an example of a type that stores a logical ``String`` and ``Int`` pair,
 @Snippet(id: Examples, slice: STRING_REPRESENTATION)
 
 Unlike delegation to raw representation, delegation to string representation is not enabled by default. You must opt-in to it by conforming to the ``BSONStringDecodable`` and ``BSONStringEncodable`` protocols.
+
+
+## Converting to and from Raw Data
+
+A complete BSON “file” is generally understood to consist of a single top-level container, usually a document.
+
+### Binding to a Document
+
+The snippet below contains a full BSON document — including the header and trailing null byte — in the variable `full`. We usually omit the top-level wrapper when storing BSON on disk, and this is the portion the ``BSON/Document.init(bytes:)`` initializer expects, so we slice `full` before binding it to `document`.
+
+@Snippet(id: DocumentStructure, slice: BINDING)
+
+Keep in mind that binding to a document performs no parsing, since the whole point of BSON is to do as little parsing as possible, as late as possible.
+
+
+### Parsing a Document
+
+To parse a document, pass it to ``BSONDocumentDecodable.init(bson:) (BSON.Document)``.
+
+@Snippet(id: DocumentStructure, slice: DECODING)
+
+
+### Serializing a Document
+
+To serialize a model type, pass it to ``BSON.Document.init(encoding:) (BSONDocumentEncodable)``. You can then get the underlying ``ArraySlice`` of bytes from ``BSON.Document.bytes``.
+
+@Snippet(id: DocumentStructure, slice: ENCODING)
+

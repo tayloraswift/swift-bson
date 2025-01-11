@@ -37,7 +37,7 @@ extension BSONListEncodable where Self:Sequence, Element:BSONEncodable
     {
         for element:Element in self
         {
-            bson.append(element)
+            element.encode(to: &bson[+])
         }
     }
 }

@@ -1,3 +1,4 @@
+@available(*, deprecated, message: "Use `Dictionary.NondeterministicItems` instead")
 extension Dictionary:BSONDecodable where Key == BSON.Key, Value:BSONDecodable
 {
     @inlinable public
