@@ -107,7 +107,7 @@ extension BSON.Document
             //  We must parse the value always, even if we are ignoring the key
             let value:BSON.AnyValue = try input.parse(variant: type)
 
-            if let key:CodingKey = .init(rawValue: key)
+            if  let key:CodingKey = .init(rawValue: key)
             {
                 try decode(key, value)
             }

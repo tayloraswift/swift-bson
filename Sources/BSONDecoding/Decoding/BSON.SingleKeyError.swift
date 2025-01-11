@@ -18,7 +18,7 @@ extension BSON.SingleKeyError:NamedError
     public
     var name:String
     {
-        "DocumentKeyError<\(String.init(reflecting: CodingKey.self))>"
+        "SingleKeyError<\(String.init(reflecting: CodingKey.self))>"
     }
     public
     var message:String
