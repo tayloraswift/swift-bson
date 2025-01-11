@@ -1,3 +1,5 @@
+import BSONABI
+
 /// A type that can be encoded to a BSON list. This protocol exists to
 /// allow types that also conform to ``Sequence`` to opt-in to automatic
 /// ``BSONEncodable`` conformance as well.
