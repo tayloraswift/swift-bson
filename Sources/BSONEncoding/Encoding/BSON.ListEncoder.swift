@@ -1,3 +1,5 @@
+import BSONABI
+
 extension BSON
 {
     /// A type that can encode BSON list elements directly to an output buffer.
@@ -32,7 +34,7 @@ extension BSON.ListEncoder:BSON.Encoder
 extension BSON.ListEncoder
 {
     @inlinable public
-    subscript(_:(Index) -> Void) -> BSON.FieldEncoder
+    subscript(_:(BSON.EndIndex) -> Void) -> BSON.FieldEncoder
     {
         _read
         {
@@ -59,7 +61,8 @@ extension BSON.ListEncoder
     /// Why a subscript and not an `append` method? Because we often want to optionally append a
     /// value while building a list, and the subscript syntax is more convenient for that.
     @inlinable public
-    subscript<Encodable>(_:(Index) -> Void) -> Encodable? where Encodable:BSONEncodable
+    subscript<Encodable>(
+        _:(BSON.EndIndex) -> Void) -> Encodable? where Encodable:BSONEncodable
     {
         get { nil }
         set (value) { value?.encode(to: &self[+]) }

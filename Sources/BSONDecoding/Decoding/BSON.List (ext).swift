@@ -8,6 +8,12 @@ extension BSON.List:BSONDecodable
 }
 extension BSON.List
 {
+    @inlinable
+    var values:Iterator { .init(input: .init(self.bytes)) }
+
+    @inlinable public
+    var parsed:BSON.ListDecoder_ { .init(input: self.values) }
+
     /// Decorates the ``BSON.AnyValue``-yielding overload of this method with one that
     /// enumerates the elements and yields them as fields.
     @inlinable public

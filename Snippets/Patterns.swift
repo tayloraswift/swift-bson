@@ -44,7 +44,7 @@ struct NumbersExpanded2:BSONListEncodable
     //  snippet.end
 }
 //  snippet.LIST_PAIR
-struct FirstAndLastName:BSONListEncodable, BSONListDecodable
+struct FirstAndLastName:BSONListEncodable, BSONListDecodable_
 {
     let firstName:String
     let lastName:String
@@ -55,12 +55,11 @@ struct FirstAndLastName:BSONListEncodable, BSONListDecodable
         bson[+] = self.lastName
     }
 
-    init(bson:BSON.ListDecoder) throws
+    init(bson:consuming BSON.ListDecoder_) throws
     {
-        try bson.shape.expect(length: 2)
-
-        self.firstName = try bson[0].decode()
-        self.lastName = try bson[1].decode()
+        self.firstName = try bson[+].decode()
+        self.lastName = try bson[+].decode()
+        try bson.position.expect(length: 2)
     }
 }
 //  snippet.end
