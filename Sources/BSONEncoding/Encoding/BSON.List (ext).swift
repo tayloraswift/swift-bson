@@ -23,7 +23,7 @@ extension BSON.List
         {
             for element:Encodable in elements
             {
-                $0.append(element)
+                element.encode(to: &$0[+])
             }
         }
     }

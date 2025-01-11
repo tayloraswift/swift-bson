@@ -11,6 +11,13 @@ extension BooleanContainer
         case b = "b"
     }
 }
+extension BooleanContainer:BSONDocumentEncodable
+{
+    func encode(to bson:inout BSON.DocumentEncoder<CodingKey>)
+    {
+        bson[.b] = self.b
+    }
+}
 extension BooleanContainer:BSONDocumentDecodable
 {
     init(bson:BSON.DocumentDecoder<CodingKey>) throws
@@ -21,7 +28,7 @@ extension BooleanContainer:BSONDocumentDecodable
 
 do
 {
-    //  snippet.DOCUMENT_STRUCTURE
+    //  snippet.BINDING
     let full:[UInt8] = [
         0x09, 0x00, 0x00, 0x00, //  Document header
         0x08, 0x62, 0x00, 0x01, //  Document body
@@ -32,9 +39,13 @@ do
     print(bson)
 
     //  snippet.DECODING
-    let decoded:BooleanContainer = try .init(
-        bson: BSON.AnyValue.document(bson))
+    let decoded:BooleanContainer = try .init(bson: bson)
+    //  snippet.ENCODING
+    let encoded:BSON.Document = .init(encoding: decoded)
+    let data:ArraySlice<UInt8> = encoded.bytes
     //  snippet.end
 
+    print(encoded)
     print(decoded)
+    print(data == full[4 ..< 8])
 }

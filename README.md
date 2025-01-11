@@ -17,6 +17,24 @@ The ***swift-bson*** library is a portable, Foundation-free library for working 
 </div>
 
 
+## Requirements
+
+The swift-bson library requires Swift 6.0 or later.
+
+
+| Platform | Status |
+| -------- | ------ |
+| 🐧 Linux | [![Tests](https://github.com/tayloraswift/swift-bson/actions/workflows/Tests.yml/badge.svg)](https://github.com/tayloraswift/swift-bson/actions/workflows/Tests.yml) |
+| 🍏 Darwin | [![Tests](https://github.com/tayloraswift/swift-bson/actions/workflows/Tests.yml/badge.svg)](https://github.com/tayloraswift/swift-bson/actions/workflows/Tests.yml) |
+| 🍏 Darwin (iOS) | [![iOS](https://github.com/tayloraswift/swift-bson/actions/workflows/iOS.yml/badge.svg)](https://github.com/tayloraswift/swift-bson/actions/workflows/iOS.yml) |
+| 🍏 Darwin (tvOS) | [![tvOS](https://github.com/tayloraswift/swift-bson/actions/workflows/tvOS.yml/badge.svg)](https://github.com/tayloraswift/swift-bson/actions/workflows/tvOS.yml) |
+| 🍏 Darwin (visionOS) | [![visionOS](https://github.com/tayloraswift/swift-bson/actions/workflows/visionOS.yml/badge.svg)](https://github.com/tayloraswift/swift-bson/actions/workflows/visionOS.yml) |
+| 🍏 Darwin (watchOS) | [![watchOS](https://github.com/tayloraswift/swift-bson/actions/workflows/watchOS.yml/badge.svg)](https://github.com/tayloraswift/swift-bson/actions/workflows/watchOS.yml) |
+
+
+[Check deployment minimums](https://swiftinit.org/docs/swift-bson#ss:platform-requirements)
+
+
 ## What is BSON?
 
 [BSON](https://bsonspec.org/) is a general-purpose binary serialization format that is a superset of [JSON](https://www.json.org/). Parsing BSON requires much less memory than parsing JSON, and the format is traversable, which makes it possible to extract individual fields nested deep within a BSON document without actually parsing the entire file.
@@ -113,24 +131,6 @@ struct ExampleModel:BSONDocumentEncodable, BSONDocumentDecodable
 - [Protocols Explained](https://swiftinit.org/docs/swift-bson/bson/walkthrough)
 - [Advanced Serialization Patterns](https://swiftinit.org/docs/swift-bson/bson/serialization-patterns)
 - [Textures and Coordinates](https://swiftinit.org/docs/swift-bson/bson/textures-and-coordinates)
-
-
-## Requirements
-
-The swift-bson library requires Swift 6.0 or later.
-
-
-| Platform | Status |
-| -------- | ------ |
-| 🐧 Linux | [![Tests](https://github.com/tayloraswift/swift-bson/actions/workflows/Tests.yml/badge.svg)](https://github.com/tayloraswift/swift-bson/actions/workflows/Tests.yml) |
-| 🍏 Darwin | [![Tests](https://github.com/tayloraswift/swift-bson/actions/workflows/Tests.yml/badge.svg)](https://github.com/tayloraswift/swift-bson/actions/workflows/Tests.yml) |
-| 🍏 Darwin (iOS) | [![iOS](https://github.com/tayloraswift/swift-bson/actions/workflows/iOS.yml/badge.svg)](https://github.com/tayloraswift/swift-bson/actions/workflows/iOS.yml) |
-| 🍏 Darwin (tvOS) | [![tvOS](https://github.com/tayloraswift/swift-bson/actions/workflows/tvOS.yml/badge.svg)](https://github.com/tayloraswift/swift-bson/actions/workflows/tvOS.yml) |
-| 🍏 Darwin (visionOS) | [![visionOS](https://github.com/tayloraswift/swift-bson/actions/workflows/visionOS.yml/badge.svg)](https://github.com/tayloraswift/swift-bson/actions/workflows/visionOS.yml) |
-| 🍏 Darwin (watchOS) | [![watchOS](https://github.com/tayloraswift/swift-bson/actions/workflows/watchOS.yml/badge.svg)](https://github.com/tayloraswift/swift-bson/actions/workflows/watchOS.yml) |
-
-
-[Check deployment minimums](https://swiftinit.org/docs/swift-bson#ss:platform-requirements)
 
 
 ## License

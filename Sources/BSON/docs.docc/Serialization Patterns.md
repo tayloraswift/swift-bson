@@ -69,6 +69,4 @@ In virtually all remaining cases, ``Array`` should be your preferred abstraction
 
 Some Swift data structures (such as ``Set``) do not have a deterministic order.
 
-The swift-bson library provides a ``BSONDecodable`` implementation for ``Set`` when the element type is ``BSONDecodable``, as this saves users an array allocation when performing one-way BSON decoding. However, ``Set`` does not have a first-class ``BSONEncodable`` conformance, because it would encode itself differently every time.
-
-You should not attempt to provide this conformance yourself, as this would be terrible for caching and overall application performance, so it’s a very bad idea to round-trip instances of ``Set`` (or similar types) through your models.
+The swift-bson library provides a ``BSONDecodable`` implementation for ``Set`` through ``Set.UnorderedElements``, which can save you an array allocation when performing one-way BSON decoding. Keep in mind though, that round-tripping ``Set`` is bad for cache performance, since the output BSON will be different every time.

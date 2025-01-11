@@ -1,3 +1,4 @@
+@available(*, deprecated, message: "Use `Set.UnorderedElements` instead.")
 extension Set:BSONDecodable where Element:BSONDecodable
 {
     @inlinable public
