@@ -18,7 +18,7 @@ Below is a worked example of how to efficiently round trip a mesh of 3D triangle
 @Snippet(id: Triangles, slice: TRIANGLE)
 
 
-### Conforming to ``BSON.BinaryPackable``
+### Conforming to `BSON.BinaryPackable`
 
 @Snippet(id: Triangles, slice: POINT_BINARY_PACKABLE)
 @Snippet(id: Triangles, slice: TRIANGLE_BINARY_PACKABLE)
