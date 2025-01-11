@@ -27,6 +27,7 @@ let package:Package = .init(name: "swift-bson",
                 .target(name: "BSONArrays"),
                 .target(name: "BSONDecoding"),
                 .target(name: "BSONEncoding"),
+                .product(name: "TraceableErrors", package: "swift-grammar"),
             ]),
 
         .target(name: "BSONABI",
@@ -46,7 +47,6 @@ let package:Package = .init(name: "swift-bson",
         .target(name: "BSONDecoding",
             dependencies: [
                 .target(name: "BSONABI"),
-                .product(name: "TraceableErrors", package: "swift-grammar"),
             ],
             exclude: [
                 "README.md",
