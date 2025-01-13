@@ -8,7 +8,7 @@ extension EncodingTest
 {
     static func validate(encoded:BSON.Document, literal:BSON.Document) throws
     {
-        #expect(encoded == literal)
+        #expect(encoded.bytes == literal.bytes)
 
         let encoded:[BSON.FieldDecoder<BSON.Key>] = try encoded.parseAll()
         let literal:[BSON.FieldDecoder<BSON.Key>] = try literal.parseAll()

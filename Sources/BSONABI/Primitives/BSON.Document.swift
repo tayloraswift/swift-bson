@@ -76,6 +76,8 @@ extension BSON.Document
         self.output.append(other.bytes)
     }
 }
+
+@available(*, deprecated)
 extension BSON.Document:Equatable
 {
     /// Performs an exact byte-wise comparison on two documents. Does not parse or validate the

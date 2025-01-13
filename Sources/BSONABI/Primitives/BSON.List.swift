@@ -55,6 +55,8 @@ extension BSON.List
     @inlinable public
     var size:Int { 5 + self.bytes.count }
 }
+
+@available(*, deprecated)
 extension BSON.List:Equatable
 {
     /// Performs an exact byte-wise comparison on two lists.
