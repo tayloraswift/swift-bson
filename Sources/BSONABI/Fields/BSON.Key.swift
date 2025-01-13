@@ -29,19 +29,11 @@ extension BSON.Key
     {
         self.init(rawValue: other.rawValue)
     }
-    public
-    init(_ codingKey:some CodingKey)
-    {
-        self.init(rawValue: codingKey.stringValue)
-    }
 }
 extension BSON.Key:Comparable
 {
-    @inlinable public static
-    func < (lhs:Self, rhs:Self) -> Bool
-    {
-        lhs.rawValue < rhs.rawValue
-    }
+    @inlinable public
+    static func < (a:Self, b:Self) -> Bool { a.rawValue < b.rawValue }
 }
 extension BSON.Key:CustomStringConvertible
 {

@@ -45,10 +45,10 @@ extension BSON.UTF8View<ArraySlice<UInt8>>:BSON.BufferTraversable
 extension BSON.UTF8View:Equatable
 {
     /// Performs a unicode-aware string comparison on two UTF-8 strings.
-    @inlinable public static
-    func == (lhs:Self, rhs:BSON.UTF8View<some BidirectionalCollection<UInt8>>) -> Bool
+    @inlinable public
+    static func == (a:Self, b:BSON.UTF8View<some BidirectionalCollection<UInt8>>) -> Bool
     {
-        lhs.description == rhs.description
+        a.description == b.description
     }
 }
 extension BSON.UTF8View where Bytes:RangeReplaceableCollection

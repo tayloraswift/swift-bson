@@ -27,11 +27,11 @@ extension BSON.BinaryView:Equatable
 {
     /// Performs an exact byte-wise comparison on two binary arrays.
     /// The subtypes must match as well.
-    @inlinable public static
-    func == (lhs:Self, rhs:BSON.BinaryView<some RandomAccessCollection<UInt8>>) -> Bool
+    @inlinable public
+    static func == (a:Self, b:BSON.BinaryView<some RandomAccessCollection<UInt8>>) -> Bool
     {
-        lhs.subtype == rhs.subtype &&
-        lhs.bytes.elementsEqual(rhs.bytes)
+        a.subtype == b.subtype &&
+        a.bytes.elementsEqual(b.bytes)
     }
 }
 extension BSON.BinaryView<ArraySlice<UInt8>>:BSON.BufferTraversable
