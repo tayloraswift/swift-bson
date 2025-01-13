@@ -33,7 +33,7 @@ extension BSON.List
     ///
     /// >   Complexity:
     ///     O(*n*), where *n* is the size of this list’s backing storage.
-    @inlinable public
+    @inlinable package
     func parseAll() throws -> [BSON.AnyValue]
     {
         var parsed:[BSON.AnyValue] = []

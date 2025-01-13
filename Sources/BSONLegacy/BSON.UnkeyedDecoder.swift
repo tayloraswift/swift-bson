@@ -178,8 +178,11 @@ extension BSON.UnkeyedDecoder:UnkeyedDecodingContainer
     {
         let path:[any CodingKey] = self.codingPath +
             CollectionOfOne<any CodingKey>.init(Index.init(intValue: self.currentIndex))
-        let container:BSON.KeyedDecoder<NestedKey> =
-            .init(try self.diagnose { try .init(parsing: $0) }, path: path)
+        let container:BSON.KeyedDecoder<NestedKey> = .init(try self.diagnose
+            {
+                try BSON.DocumentDecoder<BSON.Key>.init(parsing: $0)
+            },
+            path: path)
         return .init(container)
     }
 }

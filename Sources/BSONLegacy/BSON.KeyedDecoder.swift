@@ -176,8 +176,11 @@ extension BSON.KeyedDecoder:KeyedDecodingContainerProtocol
         forKey key:Key) throws -> KeyedDecodingContainer<NestedKey>
     {
         let path:[any CodingKey] = self.codingPath + CollectionOfOne<any CodingKey>.init(key)
-        let container:BSON.KeyedDecoder<NestedKey> =
-            .init(try self.diagnose(key) { try .init(parsing: $0) }, path: path)
+        let container:BSON.KeyedDecoder<NestedKey> = .init(try self.diagnose(key)
+            {
+                try BSON.DocumentDecoder<BSON.Key>.init(parsing: $0)
+            },
+            path: path)
         return .init(container)
     }
 }

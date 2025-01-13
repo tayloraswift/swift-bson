@@ -12,10 +12,10 @@ extension BSON
         public
         let key:Key
         public
-        let space:any Keyspace.Type
+        let space:any (RawRepresentable<String> & Sendable).Type
 
         @inlinable public
-        init(mapping key:Key, to space:any Keyspace.Type)
+        init(mapping key:Key, to space:any (RawRepresentable<String> & Sendable).Type)
         {
             self.key = key
             self.space = space

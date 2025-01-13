@@ -1,3 +1,5 @@
+import BSONABI
+
 extension BSON
 {
     /// A thin wrapper around a native Swift dictionary providing an efficient decoding
@@ -64,12 +66,28 @@ extension BSON.DocumentDecoder
     @inlinable public
     init(parsing bson:borrowing BSON.Document) throws
     {
+        try self.init(bson: bson.items)
+    }
+
+    @inlinable
+    init(bson:consuming BSON.Document.Iterator) throws
+    {
         self.init()
-        try bson.parse
+        while let (key, value):(String, BSON.AnyValue) = try bson.next()
         {
-            if case _? = self.index.updateValue($1, forKey: $0)
+            guard
+            let key:CodingKey = .init(rawValue: key)
+            else
             {
-                throw BSON.DocumentKeyError<CodingKey>.duplicate($0)
+                //  The difference between `DocumentDecoder` and something that could conform
+                //  to ``BSONKeyspaceDecodable`` is `DocumentDecoder` ignores keys that it does
+                //  not understand. This is a feature, not a bug.
+                continue
+            }
+
+            if  case _? = self.index.updateValue(value, forKey: key)
+            {
+                throw BSON.DocumentKeyError<CodingKey>.duplicate(key)
             }
         }
     }

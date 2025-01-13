@@ -13,7 +13,7 @@ extension BSONListDecodable
     @inlinable public
     init(bson:BSON.AnyValue) throws
     {
-        try self.init(bson: try .init(parsing: bson))
+        try self.init(bson: try BSON.List.init(bson: bson))
     }
 
     @inlinable public

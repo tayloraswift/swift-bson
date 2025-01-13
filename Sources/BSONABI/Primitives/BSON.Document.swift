@@ -95,6 +95,7 @@ extension BSON.Document
     ///
     /// >   Complexity:
     ///     O(*n*), where *n* is the size of this document’s backing storage.
+    @available(*, deprecated)
     @inlinable public
     func parse<CodingKey>(to decode:(CodingKey, BSON.AnyValue) throws -> ()) throws
         where CodingKey:RawRepresentable<String>
@@ -120,6 +121,7 @@ extension BSON.Document
     ///
     /// >   Complexity:
     ///     O(*n*), where *n* is the size of this document’s backing storage.
+    @available(*, deprecated)
     @inlinable public
     func parse<CodingKey, T>(
         _ transform:(_ key:CodingKey, _ value:BSON.AnyValue) throws -> T) throws -> [T]

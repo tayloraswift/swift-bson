@@ -25,21 +25,28 @@ extension BSON.List
     @inlinable public
     static func ~~ (a:Self, b:Self) -> Bool
     {
-        if  let a:[BSON.AnyValue] = try? a.parseAll(),
-            let b:[BSON.AnyValue] = try? b.parseAll(),
-                b.count == a.count
+        var a:BSON.ListDecoder_ = a.parsed
+        var b:BSON.ListDecoder_ = b.parsed
+        loop: do
         {
-            for (a, b):(BSON.AnyValue, BSON.AnyValue) in zip(a, b)
+            switch (try a[+]?.value, try b[+]?.value)
             {
-                guard a ~~ b
-                else
+            case (let a?, let b?):
+                if  a ~~ b
                 {
-                    return false
+                    continue loop
                 }
+
+                return false
+
+            case (_?, nil), (nil, _?):
+                return false
+
+            case (nil, nil):
+                return true
             }
-            return true
         }
-        else
+        catch
         {
             return false
         }

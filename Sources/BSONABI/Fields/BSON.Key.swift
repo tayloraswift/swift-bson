@@ -4,7 +4,7 @@ extension BSON
     /// guaranteed to never contain null bytes. (Null bytes in a
     /// BSON field key can be exploited to perform SQL injection.)
     @frozen public
-    struct Key:Hashable, RawRepresentable, Sendable
+    struct Key:Hashable, Keyspace, Sendable
     {
         public
         let rawValue:String

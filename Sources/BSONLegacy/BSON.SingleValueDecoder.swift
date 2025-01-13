@@ -65,8 +65,11 @@ extension BSON.SingleValueDecoder:Decoder
     func container<Key>(keyedBy _:Key.Type) throws -> KeyedDecodingContainer<Key>
         where Key:CodingKey
     {
-        let container:BSON.KeyedDecoder<Key> =
-            .init(try self.diagnose { try .init(parsing: $0) }, path: self.codingPath)
+        let container:BSON.KeyedDecoder<Key> = .init(try self.diagnose
+            {
+                try BSON.DocumentDecoder<BSON.Key>.init(parsing: $0)
+            },
+            path: self.codingPath)
         return .init(container)
     }
 }
