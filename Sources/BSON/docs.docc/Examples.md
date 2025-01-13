@@ -44,8 +44,6 @@ The ``Dictionary.UnorderedItems`` is only available when the dictionary’s key 
 >   Important:
 >   Returning a string with null bytes from ``BSON.Keyspace.rawValue`` will crash at runtime, because null bytes in document keys can be exploited to perform SQL injection attacks against MongoDB.
 
-Note that ``Dictionary`` actually does have a ``BSONEncodable`` conformance, which is available when `Value == Never`. This allows you to express empty BSON documents as `[:]` literals, which are meaningful in the MongoDB query language.
-
 
 ### Nested Documents
 
