@@ -135,7 +135,7 @@ extension BSON.Document
         return elements
     }
 }
-extension BSON.Document:ExpressibleByDictionaryLiteral
+extension BSON.Document
 {
     /// Creates a document containing the given fields, making two passes over
     /// the list of fields in order to encode the output without reallocations.
@@ -161,14 +161,7 @@ extension BSON.Document:ExpressibleByDictionaryLiteral
         self.init(
             fields: CollectionOfOne<(key:BSON.Key, value:BSON.AnyValue)>.init((key, value)))
     }
-
-    @inlinable public
-    init(dictionaryLiteral:(BSON.Key, BSON.AnyValue)...)
-    {
-        self.init(fields: dictionaryLiteral)
-    }
 }
-
 extension BSON.Document
 {
     @available(*, deprecated, message: "BSON.Document is already a BSON.Document")

@@ -33,6 +33,7 @@ External users should avoid importing this module directly. Instead, import ``/B
 ### Container fields
 
 -   ``BSON.Key``
+-   ``BSON.Keyspace``
 -   ``BSON.FieldEncoder``
 
 ### Binary interface

@@ -65,6 +65,14 @@ let package:Package = .init(name: "swift-bson",
                 .target(name: "BSON"),
             ]),
 
+        .target(name: "BSONLiterals",
+            dependencies: [
+                .target(name: "BSONABI"),
+            ],
+            exclude: [
+                "README.md",
+            ]),
+
         .target(name: "BSONReflection",
             dependencies: [
                 .target(name: "BSON"),
@@ -85,6 +93,7 @@ let package:Package = .init(name: "swift-bson",
 
         .testTarget(name: "BSONTests",
             dependencies: [
+                .target(name: "BSONLiterals"),
                 .target(name: "BSONReflection"),
                 .target(name: "BSON_UUID"),
             ]),
@@ -97,6 +106,7 @@ let package:Package = .init(name: "swift-bson",
         .testTarget(name: "BSONEncodingTests",
             dependencies: [
                 .target(name: "BSON"),
+                .target(name: "BSONLiterals"),
             ]),
 
         .testTarget(name: "BSONIntegrationTests",

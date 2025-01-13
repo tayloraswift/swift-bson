@@ -1,5 +1,6 @@
 import Base16
 import BSON
+import BSONLiterals
 import BSONReflection
 import BSON_UUID
 import UnixTime

@@ -104,8 +104,7 @@ extension BSON.List
     @inlinable public
     func parse() throws -> [BSON.AnyValue] { try self.parse { $0 } }
 }
-
-extension BSON.List:ExpressibleByArrayLiteral
+extension BSON.List
 {
     /// Creates a list-document containing the given elements.
     @inlinable public
@@ -119,14 +118,7 @@ extension BSON.List:ExpressibleByArrayLiteral
         })
         self.init(bytes: document.bytes)
     }
-
-    @inlinable public
-    init(arrayLiteral:BSON.AnyValue...)
-    {
-        self.init(elements: arrayLiteral)
-    }
 }
-
 extension BSON.List
 {
     @available(*, deprecated, message: "BSON.List is already a BSON.List")

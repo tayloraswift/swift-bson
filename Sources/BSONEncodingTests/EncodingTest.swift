@@ -12,6 +12,7 @@ extension EncodingTest
 
         let encoded:[BSON.FieldDecoder<BSON.Key>] = try encoded.parseAll()
         let literal:[BSON.FieldDecoder<BSON.Key>] = try literal.parseAll()
+
         #expect(encoded.map(\.key)   == literal.map(\.key))
         #expect(encoded.map(\.value) == literal.map(\.value))
     }

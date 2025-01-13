@@ -21,7 +21,7 @@ struct Reflection
             $0["averageRating"] = 2.76
             $0["supervisors"] = ["Barbie", "Midge", "Raquelle"]
             $0["notes"] = [] as [Never]
-            $0["campaigns"] = [:]
+            $0["campaigns"](BSON.Key.self) { _ in }
             $0["complaints"](Int.self)
             {
                 $0(BSON.Key.self)
