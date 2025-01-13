@@ -24,9 +24,14 @@ extension BSON.TraceableDecoder
         try self.decode { try decode(try .init(parsing: $0)) }
     }
     @inlinable public
-    func decode<T>(with decode:(BSON.ListDecoder) throws -> T) throws -> T
+    func decode<T>(with decode:(inout BSON.ListDecoder_) throws -> T) throws -> T
     {
-        try self.decode { try decode(try .init(parsing: $0)) }
+        try self.decode
+        {
+            let list:BSON.List = try .init(bson: $0)
+            var decoder:BSON.ListDecoder_ = list.parsed
+            return try decode(&decoder)
+        }
     }
 
     @inlinable public

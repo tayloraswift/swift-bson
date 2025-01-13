@@ -1,5 +1,10 @@
 extension BSON
 {
+    /// An iterable type that produces this list’s elements, with associated indices. Parsing a
+    /// list is slightly faster than parsing a general ``Document``, because this method ignores
+    /// the document keys.
+    ///
+    /// This type does *not* perform any key validation.
     @frozen public
     struct ListDecoder_
     {
@@ -19,15 +24,24 @@ extension BSON
 extension BSON.ListDecoder_
 {
     @inlinable public
-    var position:BSON.Shape { .init(length: self.index) }
+    var position:Int { self.index }
 
     @inlinable public
     subscript(_:(BSON.EndIndex) -> ()) -> BSON.OptionalDecoder<Int>
     {
         mutating get throws
         {
-            defer { self.index += 1 }
-            return .init(key: self.index, value: try self.input.next())
+            guard
+            let value:BSON.AnyValue = try self.input.next()
+            else
+            {
+                return .init(key: self.index, value: nil)
+            }
+            defer
+            {
+                self.index += 1
+            }
+            return .init(key: self.index, value: value)
         }
     }
 

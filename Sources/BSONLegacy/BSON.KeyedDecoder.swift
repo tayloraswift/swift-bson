@@ -168,7 +168,7 @@ extension BSON.KeyedDecoder:KeyedDecodingContainerProtocol
     {
         let path:[any CodingKey] = self.codingPath + CollectionOfOne<any CodingKey>.init(key)
         let container:BSON.UnkeyedDecoder =
-            .init(try self.diagnose(key) { try .init(parsing: $0) }, path: path)
+            try .init(try self.diagnose(key) { try .init(bson: $0) }, path: path)
         return container as any UnkeyedDecodingContainer
     }
     public

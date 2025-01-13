@@ -76,6 +76,7 @@ extension BSON.List
     ///
     /// >   Complexity:
     ///     O(*n*), where *n* is the size of this list’s backing storage.
+    @available(*, deprecated)
     @inlinable public
     func parse(to decode:(_ element:BSON.AnyValue) throws -> ()) throws
     {
@@ -87,6 +88,7 @@ extension BSON.List
             try decode(try input.parse(variant: type))
         }
     }
+    @available(*, deprecated)
     @inlinable public
     func parse<T>(_ transform:(_ element:BSON.AnyValue) throws -> T) throws -> [T]
     {
@@ -98,17 +100,7 @@ extension BSON.List
         return elements
     }
 
-    /// Splits this list’s inline key-value pairs into an array containing the
-    /// values only. Parsing a list is slightly faster than parsing a general
-    /// ``Document``, because this method ignores the document keys.
-    ///
-    /// This method does *not* perform any key validation.
-    ///
-    /// Calling this convenience method is the same as calling ``parse(to:)`` and
-    /// collecting the yielded elements in an array.
-    ///
-    /// >   Complexity:
-    ///     O(*n*), where *n* is the size of this list’s backing storage.
+    @available(*, deprecated)
     @inlinable public
     func parse() throws -> [BSON.AnyValue] { try self.parse { $0 } }
 }

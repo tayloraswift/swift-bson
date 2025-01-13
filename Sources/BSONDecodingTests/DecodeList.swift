@@ -1,22 +1,38 @@
-import BSONDecoding
+import BSON
 import Testing
 
 @Suite
 struct DecodeList
 {
     private
-    let bson:BSON.DocumentDecoder<BSON.Key>
+    enum CodingKey:String, Sendable
+    {
+        case w
+        case x
+        case y
+        case z
+        case heterogenous
+    }
+
+    private
+    let bson:BSON.DocumentDecoder<CodingKey>
 
     init() throws
     {
-        let bson:BSON.Document = [
-            "none":     [],
-            "two":      ["a", "b"],
-            "three":    ["a", "b", "c"],
-            "four":     ["a", "b", "c", "d"],
-
-            "heterogenous": ["a", "b", 0, "d"],
-        ]
+        let bson:BSON.Document = .init(CodingKey.self)
+        {
+            $0[.w](Int.self) { _ in }
+            $0[.x](Int.self) { $0[+] = "a" ; $0[+] = "b" }
+            $0[.y](Int.self) { $0[+] = "a" ; $0[+] = "b" ; $0[+] = "c" }
+            $0[.z](Int.self) { $0[+] = "a" ; $0[+] = "b" ; $0[+] = "c" ; $0[+] = "d" }
+            $0[.heterogenous](Int.self)
+            {
+                $0[+] = "a"
+                $0[+] = "b"
+                $0[+] = 0 as Int32
+                $0[+] = "d"
+            }
+        }
 
         self.bson = try .init(parsing: bson)
     }
@@ -24,102 +40,97 @@ struct DecodeList
 extension DecodeList
 {
     @Test
-    func NoneToTwo() throws
+    func None() throws
     {
-        #expect(throws: BSON.DecodingError<BSON.Key>.init(
-            BSON.ShapeError.init(invalid: 0, expected: .length(2)),
-            in: "none"))
+        #expect(throws:
+            BSON.DecodingError<CodingKey>.init(
+                BSON.DocumentKeyError<Int>.undefined(0),
+                in: .w))
         {
-            try self.bson["none"].decode { try $0.shape.expect(length: 2) }
+            try self.bson[.w].decode
+            {
+                let _:String = try $0[+].decode()
+            }
         }
     }
 
     @Test
-    func TwoToTwo() throws
+    func Two() throws
     {
-        #expect(try ["a", "b"] == self.bson["two"].decode
+        try self.bson[.x].decode
         {
-            try $0.shape.expect(length: 2)
-            return try $0.map { try $0.decode(to: String.self) }
-        })
+            try #expect($0[+].decode() == "a")
+            try #expect($0[+].decode() == "b")
+            try #expect($0[+] == nil)
+        }
     }
 
     @Test
     func ThreeToTwo() throws
     {
-        #expect(throws: BSON.DecodingError<BSON.Key>.init(
-            BSON.ShapeError.init(invalid: 3, expected: .length(2)),
-            in: "three"))
+        #expect(throws:
+            BSON.DecodingError<CodingKey>.init(
+                BSON.DecodingError<Int>.init(
+                    BSON.TypecastError<Never>.init(invalid: .string),
+                    in: 2),
+                in: .y))
         {
-            try self.bson["three"].decode { try $0.shape.expect(length: 2) }
-        }
-    }
+            try self.bson[.y].decode
+            {
+                try #expect($0[+].decode() == "a")
+                try #expect($0[+].decode() == "b")
 
-    @Test
-    func ThreeByTwo() throws
-    {
-        #expect(throws: BSON.DecodingError<BSON.Key>.init(
-            BSON.ShapeError.init(invalid: 3, expected: .multiple(of: 2)),
-            in: "three"))
-        {
-            try self.bson["three"].decode { try $0.shape.expect(multipleOf: 2) }
+                try $0[+]?.decode(to: Never.self)
+            }
         }
-    }
-
-    @Test
-    func FourByTwo() throws
-    {
-        #expect(try ["a", "b", "c", "d"] == self.bson["four"].decode
-        {
-            _ = try $0.shape.expect(multipleOf: 2)
-            return try $0.map { try $0.decode(to: String.self) }
-        })
     }
 
     @Test
     func Map() throws
     {
-        #expect(try ["a", "b", "c", "d"] == self.bson["four"].decode())
+        #expect(try ["a", "b", "c", "d"] == self.bson[.z].decode())
     }
 
     @Test
     func MapInvalid() throws
     {
-        #expect(throws: BSON.DecodingError<BSON.Key>.init(
-            BSON.DecodingError<Int>.init(
-                BSON.TypecastError<BSON.UTF8View<ArraySlice<UInt8>>>.init(
-                    invalid: .int32),
-                in: 2),
-            in: "heterogenous"))
+        #expect(throws:
+            BSON.DecodingError<CodingKey>.init(
+                BSON.DecodingError<Int>.init(
+                    BSON.TypecastError<BSON.UTF8View<ArraySlice<UInt8>>>.init(invalid: .int32),
+                    in: 2),
+                in: .heterogenous))
         {
-            try self.bson["heterogenous"].decode(to: [String].self)
+            try self.bson[.heterogenous].decode(to: [String].self)
         }
     }
 
     @Test
     func Element() throws
     {
-        #expect(try "c" == self.bson["four"].decode
+        try self.bson[.z].decode
         {
-            try $0.shape.expect { 2 < $0 }
-            return try $0[2].decode(to: String.self)
-        })
+            try #expect($0[+] != nil)
+            try #expect($0[+] != nil)
+            try #expect($0[+].decode() == "c")
+        }
     }
 
     @Test
     func ElementInvalid() throws
     {
-        #expect(throws: BSON.DecodingError<BSON.Key>.init(
-            BSON.DecodingError<Int>.init(
-                BSON.TypecastError<BSON.UTF8View<ArraySlice<UInt8>>>.init(
-                    invalid: .int32),
-                in: 2),
-            in: "heterogenous"))
+        #expect(throws:
+            BSON.DecodingError<CodingKey>.init(
+                BSON.DecodingError<Int>.init(
+                    BSON.TypecastError<BSON.UTF8View<ArraySlice<UInt8>>>.init(invalid: .int32),
+                    in: 2),
+                in: .heterogenous))
         {
-            try self.bson["heterogenous"].decode
+            try self.bson[.heterogenous].decode
             {
-                try $0.shape.expect { 2 < $0 }
-                return try $0[2].decode(to: String.self)
+                try #expect($0[+] != nil)
+                try #expect($0[+] != nil)
+                return try $0[+].decode(to: String.self)
             }
         }
     }

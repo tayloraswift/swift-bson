@@ -1,8 +1,8 @@
-import BSONDecoding
+import BSON
 import Testing
 
 @Suite
-enum DecodeBinary
+struct DecodeBinary
 {
     @Test
     static func MD5() throws

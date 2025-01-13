@@ -91,13 +91,12 @@ let package:Package = .init(name: "swift-bson",
 
         .testTarget(name: "BSONDecodingTests",
             dependencies: [
-                .target(name: "BSONDecoding"),
+                .target(name: "BSON"),
             ]),
 
         .testTarget(name: "BSONEncodingTests",
             dependencies: [
                 .target(name: "BSON"),
-                .target(name: "BSONEncoding"),
             ]),
 
         .testTarget(name: "BSONIntegrationTests",
@@ -108,8 +107,8 @@ let package:Package = .init(name: "swift-bson",
 
         .testTarget(name: "BSONReflectionTests",
             dependencies: [
+                .target(name: "BSON"),
                 .target(name: "BSONReflection"),
-                .target(name: "BSONEncoding"),
             ]),
     ]
 )

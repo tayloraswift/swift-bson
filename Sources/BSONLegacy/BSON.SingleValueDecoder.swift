@@ -58,7 +58,7 @@ extension BSON.SingleValueDecoder:Decoder
     public
     func unkeyedContainer() throws -> any UnkeyedDecodingContainer
     {
-        BSON.UnkeyedDecoder.init(try self.diagnose { try .init(parsing: $0) },
+        try BSON.UnkeyedDecoder.init(try self.diagnose { try .init(bson: $0) },
             path: self.codingPath) as any UnkeyedDecodingContainer
     }
     public

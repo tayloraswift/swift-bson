@@ -2,6 +2,7 @@ extension BSON
 {
     /// A thin wrapper around a native Swift array providing an efficient decoding
     /// interface for a ``BSON/List``.
+    @available(*, deprecated, renamed: "ListDecoder_")
     @frozen public
     struct ListDecoder
     {
@@ -15,25 +16,16 @@ extension BSON
         }
     }
 }
+@available(*, deprecated)
 extension BSON.ListDecoder:BSON.Decoder
 {
-    /// Attempts to unwrap and parse an array-decoder from the given variant.
-    ///
-    /// This method will only attempt to parse statically-typed BSON lists; it will not
-    /// inspect general documents to determine if they are valid lists.
-    ///
-    /// -   Returns:
-    ///     The payload of the variant, parsed to a list decoder, if it matches
-    ///     ``AnyValue/list(_:) [case]`` and could be successfully parsed, nil otherwise.
-    ///
-    /// >   Complexity:
-    //      O(*n*), where *n* is the number of elements in the source list.
     @inlinable public
     init(parsing bson:borrowing BSON.AnyValue) throws
     {
         try self.init(parsing: try .init(bson: copy bson))
     }
 }
+@available(*, deprecated)
 extension BSON.ListDecoder
 {
     /// Attempts to create a list decoder from the given list.
@@ -57,6 +49,7 @@ extension BSON.ListDecoder
         .init(length: self.elements.count)
     }
 }
+@available(*, deprecated)
 extension BSON.ListDecoder:RandomAccessCollection
 {
     @inlinable public
