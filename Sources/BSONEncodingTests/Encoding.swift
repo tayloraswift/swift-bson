@@ -1,4 +1,5 @@
 import BSONABI
+import BSONLiterals
 import BSONEncoding
 import Testing
 
@@ -14,7 +15,7 @@ struct Encoding:EncodingTest
         try Self.validate(
             encoded: .init(BSON.Key.self)
             {
-                $0["a"] = [:]
+                $0["a"].encode(document: [:])
                 $0["b"](BSON.Key.self)
                 {
                     $0["x"] = 1

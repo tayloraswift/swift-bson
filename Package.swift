@@ -27,6 +27,7 @@ let package:Package = .init(name: "swift-bson",
                 .target(name: "BSONArrays"),
                 .target(name: "BSONDecoding"),
                 .target(name: "BSONEncoding"),
+                .product(name: "TraceableErrors", package: "swift-grammar"),
             ]),
 
         .target(name: "BSONABI",
@@ -46,7 +47,6 @@ let package:Package = .init(name: "swift-bson",
         .target(name: "BSONDecoding",
             dependencies: [
                 .target(name: "BSONABI"),
-                .product(name: "TraceableErrors", package: "swift-grammar"),
             ],
             exclude: [
                 "README.md",
@@ -63,6 +63,14 @@ let package:Package = .init(name: "swift-bson",
         .target(name: "BSONLegacy",
             dependencies: [
                 .target(name: "BSON"),
+            ]),
+
+        .target(name: "BSONLiterals",
+            dependencies: [
+                .target(name: "BSONABI"),
+            ],
+            exclude: [
+                "README.md",
             ]),
 
         .target(name: "BSONReflection",
@@ -85,19 +93,20 @@ let package:Package = .init(name: "swift-bson",
 
         .testTarget(name: "BSONTests",
             dependencies: [
+                .target(name: "BSONLiterals"),
                 .target(name: "BSONReflection"),
                 .target(name: "BSON_UUID"),
             ]),
 
         .testTarget(name: "BSONDecodingTests",
             dependencies: [
-                .target(name: "BSONDecoding"),
+                .target(name: "BSON"),
             ]),
 
         .testTarget(name: "BSONEncodingTests",
             dependencies: [
                 .target(name: "BSON"),
-                .target(name: "BSONEncoding"),
+                .target(name: "BSONLiterals"),
             ]),
 
         .testTarget(name: "BSONIntegrationTests",
@@ -108,8 +117,8 @@ let package:Package = .init(name: "swift-bson",
 
         .testTarget(name: "BSONReflectionTests",
             dependencies: [
+                .target(name: "BSON"),
                 .target(name: "BSONReflection"),
-                .target(name: "BSONEncoding"),
             ]),
     ]
 )

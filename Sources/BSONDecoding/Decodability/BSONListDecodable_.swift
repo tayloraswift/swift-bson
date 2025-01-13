@@ -28,6 +28,8 @@ extension BSONListDecodable_ where Self:RangeReplaceableCollection, Self.Element
     init(bson:consuming BSON.ListDecoder_) throws
     {
         self.init()
+        //  The explicit type `Element.self` (instead of `Element?.self`) guards against the
+        //  rare scenario where a BSON list contains an interior `null` value.
         while let next:Element = try bson[+]?.decode(to: Element.self)
         {
             self.append(next)

@@ -11,9 +11,10 @@ extension BSON.Document
         do
         {
             var string:String = indent.level == 0 ? "{" : "\(indent){"
-            try self.parse
+            var items:BSON.KeyspaceDecoder<BSON.Key> = self.parsed()
+            while let next:BSON.FieldDecoder<BSON.Key> = try items[+]
             {
-                (indent + 1).print(key: $0, value: $1, to: &string)
+                (indent + 1).print(key: next.key, value: next.value, to: &string)
             }
             string += "\(indent)}"
             return string
@@ -39,31 +40,30 @@ extension BSON.Document
     /// of deprecated BSON variants. For example, a value of the deprecated `symbol` type
     /// will compare equal to a ``BSON.AnyValue/string(_:)`` value with the same contents.
     @inlinable public static
-    func ~~ (lhs:Self, rhs:Self) -> Bool
+    func ~~ (a:Self, b:Self) -> Bool
     {
-        if  let lhs:[(key:BSON.Key, value:BSON.AnyValue)] =
-                try? lhs.parse({ ($0, $1) }),
-            let rhs:[(key:BSON.Key, value:BSON.AnyValue)] =
-                try? rhs.parse({ ($0, $1) }),
-                rhs.count == lhs.count
+        var a:BSON.KeyspaceDecoder<BSON.Key> = a.parsed()
+        var b:BSON.KeyspaceDecoder<BSON.Key> = b.parsed()
+        loop: do
         {
-            for (lhs, rhs):
-            (
-                (key:BSON.Key, value:BSON.AnyValue),
-                (key:BSON.Key, value:BSON.AnyValue)
-            )
-            in zip(lhs, rhs)
+            switch (try a[+], try b[+])
             {
-                guard   lhs.key   ==  rhs.key,
-                        lhs.value ~~ rhs.value
-                else
+            case (let a?, let b?):
+                if  a.key == b.key, a.value ~~ b.value
                 {
-                    return false
+                    continue loop
                 }
+
+                return false
+
+            case (_?, nil), (nil, _?):
+                return false
+
+            case (nil, nil):
+                return true
             }
-            return true
         }
-        else
+        catch
         {
             return false
         }
@@ -76,6 +76,12 @@ extension BSON.Document
     @inlinable public
     func canonicalized() throws -> Self
     {
-        .init(fields: try self.parse { ($0, try $1.canonicalized()) })
+        var canonical:[(BSON.Key, BSON.AnyValue)] = []
+        var elements:BSON.KeyspaceDecoder<BSON.Key> = self.parsed()
+        while let next:BSON.FieldDecoder<BSON.Key> = try elements[+]
+        {
+            canonical.append((next.key, try next.value.canonicalized()))
+        }
+        return .init(fields: canonical)
     }
 }

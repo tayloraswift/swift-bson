@@ -61,18 +61,20 @@ extension BSON.ListEncoder
     /// Why a subscript and not an `append` method? Because we often want to optionally append a
     /// value while building a list, and the subscript syntax is more convenient for that.
     @inlinable public
-    subscript<Encodable>(
-        _:(BSON.EndIndex) -> Void) -> Encodable? where Encodable:BSONEncodable
+    subscript<Encodable>(_:(BSON.EndIndex) -> Void) -> Encodable? where Encodable:BSONEncodable
     {
         get { nil }
         set (value) { value?.encode(to: &self[+]) }
     }
 
+    /// A shorthand for eliding the `[+]` index specifier.
     @inlinable public mutating
     func callAsFunction(_ yield:(inout BSON.ListEncoder) -> ())
     {
         yield(&self[+][as: BSON.ListEncoder.self])
     }
+
+    /// A shorthand for eliding the `[+]` index specifier.
     @inlinable public mutating
     func callAsFunction<CodingKey>(_:CodingKey.Type = CodingKey.self,
         _ yield:(inout BSON.DocumentEncoder<CodingKey>) -> ())

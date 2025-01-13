@@ -41,25 +41,18 @@ extension Dictionary.UnorderedItems:BSONDecodable where Value:BSONDecodable
     @inlinable public
     init(bson:BSON.Document) throws
     {
-        var items:[Key: Value] = [:]
-        try bson.parse
+        var index:[Key: Value] = [:]
+        var items:BSON.KeyspaceDecoder<Key> = bson.parsed()
+        while let field:BSON.FieldDecoder<Key> = try items[+]
         {
-            (field:BSON.FieldDecoder<BSON.Key>) in
-
             guard
-            let key:Key = .init(rawValue: field.key.rawValue)
+            case nil = index.updateValue(try field.decode(to: Value.self), forKey: field.key)
             else
             {
-                throw BSON.KeyspaceError.init(mapping: field.key, to: Key.self)
-            }
-
-            guard case nil = items.updateValue(try field.decode(to: Value.self), forKey: key)
-            else
-            {
-                throw BSON.DocumentKeyError<Key>.duplicate(key)
+                throw BSON.DocumentKeyError<Key>.duplicate(field.key)
             }
         }
 
-        self.init(dictionary: items)
+        self.init(dictionary: index)
     }
 }

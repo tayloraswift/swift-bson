@@ -22,24 +22,31 @@ extension BSON.List
     /// `==` comparison may also compare equal under this operator, due to normalization
     /// of deprecated BSON variants. For example, a value of the deprecated `symbol` type
     /// will compare equal to a `BSON//Value.string(_:)` value with the same contents.
-    @inlinable public static
-    func ~~ (lhs:Self, rhs:Self) -> Bool
+    @inlinable public
+    static func ~~ (a:Self, b:Self) -> Bool
     {
-        if  let lhs:[BSON.AnyValue] = try? lhs.parse(),
-            let rhs:[BSON.AnyValue] = try? rhs.parse(),
-                rhs.count == lhs.count
+        var a:BSON.ListDecoder_ = a.parsed
+        var b:BSON.ListDecoder_ = b.parsed
+        loop: do
         {
-            for (lhs, rhs):(BSON.AnyValue, BSON.AnyValue) in zip(lhs, rhs)
+            switch (try a[+]?.value, try b[+]?.value)
             {
-                guard lhs ~~ rhs
-                else
+            case (let a?, let b?):
+                if  a ~~ b
                 {
-                    return false
+                    continue loop
                 }
+
+                return false
+
+            case (_?, nil), (nil, _?):
+                return false
+
+            case (nil, nil):
+                return true
             }
-            return true
         }
-        else
+        catch
         {
             return false
         }
@@ -52,6 +59,12 @@ extension BSON.List
     @inlinable public
     func canonicalized() throws -> Self
     {
-        .init(elements: try self.parse { try $0.canonicalized() })
+        var canonical:[BSON.AnyValue] = []
+        var elements:BSON.ListDecoder_ = self.parsed
+        while let next:BSON.FieldDecoder<Int> = try elements[+]
+        {
+            canonical.append(try next.value.canonicalized())
+        }
+        return .init(elements: canonical)
     }
 }

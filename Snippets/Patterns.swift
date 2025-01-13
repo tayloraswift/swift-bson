@@ -59,7 +59,8 @@ struct FirstAndLastName:BSONListEncodable, BSONListDecodable_
     {
         self.firstName = try bson[+].decode()
         self.lastName = try bson[+].decode()
-        try bson.position.expect(length: 2)
+        //  Verify that there are no more elements in the list.
+        try bson[+]?.decode(to: Never.self)
     }
 }
 //  snippet.end

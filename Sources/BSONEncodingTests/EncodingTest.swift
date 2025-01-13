@@ -10,8 +10,8 @@ extension EncodingTest
     {
         #expect(encoded == literal)
 
-        let encoded:[(key:BSON.Key, value:BSON.AnyValue)] = try encoded.parse { ($0, $1) }
-        let literal:[(key:BSON.Key, value:BSON.AnyValue)] = try literal.parse { ($0, $1) }
+        let encoded:[BSON.FieldDecoder<BSON.Key>] = try encoded.parseAll()
+        let literal:[BSON.FieldDecoder<BSON.Key>] = try literal.parseAll()
 
         #expect(encoded.map(\.key)   == literal.map(\.key))
         #expect(encoded.map(\.value) == literal.map(\.value))

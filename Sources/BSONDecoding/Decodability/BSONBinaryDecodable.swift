@@ -13,6 +13,6 @@ extension BSONBinaryDecodable
     @inlinable public
     init(bson:BSON.AnyValue) throws
     {
-        try self.init(bson: try .init(parsing: bson))
+        try self.init(bson: try BSON.BinaryDecoder.init(parsing: bson))
     }
 }

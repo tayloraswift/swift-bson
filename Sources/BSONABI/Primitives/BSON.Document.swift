@@ -95,6 +95,7 @@ extension BSON.Document
     ///
     /// >   Complexity:
     ///     O(*n*), where *n* is the size of this document’s backing storage.
+    @available(*, deprecated)
     @inlinable public
     func parse<CodingKey>(to decode:(CodingKey, BSON.AnyValue) throws -> ()) throws
         where CodingKey:RawRepresentable<String>
@@ -120,6 +121,7 @@ extension BSON.Document
     ///
     /// >   Complexity:
     ///     O(*n*), where *n* is the size of this document’s backing storage.
+    @available(*, deprecated)
     @inlinable public
     func parse<CodingKey, T>(
         _ transform:(_ key:CodingKey, _ value:BSON.AnyValue) throws -> T) throws -> [T]
@@ -133,7 +135,7 @@ extension BSON.Document
         return elements
     }
 }
-extension BSON.Document:ExpressibleByDictionaryLiteral
+extension BSON.Document
 {
     /// Creates a document containing the given fields, making two passes over
     /// the list of fields in order to encode the output without reallocations.
@@ -159,14 +161,7 @@ extension BSON.Document:ExpressibleByDictionaryLiteral
         self.init(
             fields: CollectionOfOne<(key:BSON.Key, value:BSON.AnyValue)>.init((key, value)))
     }
-
-    @inlinable public
-    init(dictionaryLiteral:(BSON.Key, BSON.AnyValue)...)
-    {
-        self.init(fields: dictionaryLiteral)
-    }
 }
-
 extension BSON.Document
 {
     @available(*, deprecated, message: "BSON.Document is already a BSON.Document")

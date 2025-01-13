@@ -13,14 +13,8 @@ extension Set
         }
     }
 }
-extension Set.UnorderedElements:BSONEncodable where Element:BSONEncodable
+extension Set.UnorderedElements:BSONEncodable, BSONListEncodable where Element:BSONEncodable
 {
-    @inlinable public
-    func encode(to field:inout BSON.FieldEncoder)
-    {
-        self.encode(to: &field[as: BSON.ListEncoder.self])
-    }
-
     @inlinable public
     func encode(to bson:inout BSON.ListEncoder)
     {
@@ -30,20 +24,17 @@ extension Set.UnorderedElements:BSONEncodable where Element:BSONEncodable
         }
     }
 }
-extension Set.UnorderedElements:BSONDecodable where Element:BSONDecodable
+extension Set.UnorderedElements:BSONDecodable, BSONListDecodable_ where Element:BSONDecodable
 {
     @inlinable public
-    init(bson:BSON.AnyValue) throws
-    {
-        try self.init(bson: try .init(bson: consume bson))
-    }
-    @inlinable public
-    init(bson:BSON.List) throws
+    init(bson:consuming BSON.ListDecoder_) throws
     {
         var set:Set<Element> = []
-        try bson.parse
+        //  The explicit type `Element.self` (instead of `Element?.self`) guards against the
+        //  rare scenario where a BSON list contains an interior `null` value.
+        while let element:Element = try bson[+]?.decode(to: Element.self)
         {
-            set.update(with: try $0.decode(to: Element.self))
+            set.update(with: element)
         }
         self.init(set: set)
     }

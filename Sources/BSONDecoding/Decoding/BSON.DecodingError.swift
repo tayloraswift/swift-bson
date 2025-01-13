@@ -1,5 +1,3 @@
-import TraceableErrors
-
 extension BSON
 {
     /// An error occurred while decoding a document field.
@@ -19,28 +17,5 @@ extension BSON
             self.location = location
             self.underlying = underlying
         }
-    }
-}
-extension BSON.DecodingError:Equatable where Location:Equatable
-{
-    /// Compares the ``location`` properties and the ``underlying``
-    /// errors of the operands for equality, returning `true`
-    /// if they are equal. Always returns `false` if (any of)
-    /// the underlying ``Error`` existentials are not ``Equatable``.
-    public static
-    func == (lhs:Self, rhs:Self) -> Bool
-    {
-        lhs.location == rhs.location &&
-        lhs.underlying == rhs.underlying
-    }
-}
-extension BSON.DecodingError:TraceableError
-{
-    /// Returns a single note that says
-    /// [`"while decoding value for field '_'"`]().
-    public
-    var notes:[String]
-    {
-        ["while decoding value for field '\(self.location)'"]
     }
 }
