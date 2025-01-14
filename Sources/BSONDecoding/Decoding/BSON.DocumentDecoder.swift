@@ -53,9 +53,6 @@ extension BSON.DocumentDecoder
     /// being used to bootstrap a unicode table), uniquing them by ``String``
     /// comparison would drop one of the values.
     ///
-    /// To get a plain array of key-value pairs with no decoding interface, call the
-    /// document view’s ``BSON.Document/parse(_:)`` method instead.
-    ///
     /// >   Complexity:
     ///     O(*n*), where *n* is the number of fields in the source document.
     ///
