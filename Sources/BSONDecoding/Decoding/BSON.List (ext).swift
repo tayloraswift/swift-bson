@@ -23,7 +23,7 @@ extension BSON.List
     var values:Iterator { .init(input: .init(self.bytes)) }
 
     @inlinable public
-    var parsed:BSON.ListDecoder_ { .init(input: self.values) }
+    var parsed:BSON.ListDecoder { .init(input: self.values) }
 
     /// Splits this list’s inline key-value pairs into an array containing the
     /// values only. Parsing a list is slightly faster than parsing a general

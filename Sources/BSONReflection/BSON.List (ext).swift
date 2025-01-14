@@ -25,8 +25,8 @@ extension BSON.List
     @inlinable public
     static func ~~ (a:Self, b:Self) -> Bool
     {
-        var a:BSON.ListDecoder_ = a.parsed
-        var b:BSON.ListDecoder_ = b.parsed
+        var a:BSON.ListDecoder = a.parsed
+        var b:BSON.ListDecoder = b.parsed
         loop: do
         {
             switch (try a[+]?.value, try b[+]?.value)
@@ -60,7 +60,7 @@ extension BSON.List
     func canonicalized() throws -> Self
     {
         var canonical:[BSON.AnyValue] = []
-        var elements:BSON.ListDecoder_ = self.parsed
+        var elements:BSON.ListDecoder = self.parsed
         while let next:BSON.FieldDecoder<Int> = try elements[+]
         {
             canonical.append(try next.value.canonicalized())

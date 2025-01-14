@@ -6,7 +6,7 @@ extension BSON
     ///
     /// This type does *not* perform any key validation.
     @frozen public
-    struct ListDecoder_
+    struct ListDecoder
     {
         @usableFromInline
         var input:List.Iterator
@@ -21,7 +21,7 @@ extension BSON
         }
     }
 }
-extension BSON.ListDecoder_
+extension BSON.ListDecoder
 {
     @inlinable public
     var position:Int { self.index }

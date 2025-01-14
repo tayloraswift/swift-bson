@@ -24,10 +24,10 @@ extension Set.UnorderedElements:BSONEncodable, BSONListEncodable where Element:B
         }
     }
 }
-extension Set.UnorderedElements:BSONDecodable, BSONListDecodable_ where Element:BSONDecodable
+extension Set.UnorderedElements:BSONDecodable, BSONListDecodable where Element:BSONDecodable
 {
     @inlinable public
-    init(bson:consuming BSON.ListDecoder_) throws
+    init(bson:consuming BSON.ListDecoder) throws
     {
         var set:Set<Element> = []
         //  The explicit type `Element.self` (instead of `Element?.self`) guards against the

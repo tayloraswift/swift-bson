@@ -4,11 +4,11 @@ import BSONABI
 /// protocol if you need random-access decoding. Many arraylike data structures are
 /// more-efficiently decoded from a ``BSON.List`` at the ``BSONDecodable`` level.
 public
-protocol BSONListDecodable_:BSONDecodable
+protocol BSONListDecodable:BSONDecodable
 {
-    init(bson:consuming BSON.ListDecoder_) throws
+    init(bson:consuming BSON.ListDecoder) throws
 }
-extension BSONListDecodable_
+extension BSONListDecodable
 {
     @inlinable public
     init(bson:BSON.AnyValue) throws
@@ -22,10 +22,10 @@ extension BSONListDecodable_
         try self.init(bson: bson.parsed)
     }
 }
-extension BSONListDecodable_ where Self:RangeReplaceableCollection, Self.Element:BSONDecodable
+extension BSONListDecodable where Self:RangeReplaceableCollection, Self.Element:BSONDecodable
 {
     @inlinable public
-    init(bson:consuming BSON.ListDecoder_) throws
+    init(bson:consuming BSON.ListDecoder) throws
     {
         self.init()
         //  The explicit type `Element.self` (instead of `Element?.self`) guards against the
