@@ -30,7 +30,7 @@ extension BSON.Document:CustomStringConvertible
     public
     var description:String { self.description(indent: "    ") }
 }
-extension BSON.Document
+extension BSON.Document:Equatable
 {
     /// Performs a type-aware equivalence comparison by parsing each operand and recursively
     /// comparing the elements. Returns false if either operand fails to parse.
@@ -40,7 +40,7 @@ extension BSON.Document
     /// of deprecated BSON variants. For example, a value of the deprecated `symbol` type
     /// will compare equal to a ``BSON.AnyValue/string(_:)`` value with the same contents.
     @inlinable public static
-    func ~~ (a:Self, b:Self) -> Bool
+    func == (a:Self, b:Self) -> Bool
     {
         var a:BSON.KeyspaceDecoder<BSON.Key> = a.parsed()
         var b:BSON.KeyspaceDecoder<BSON.Key> = b.parsed()
@@ -49,7 +49,7 @@ extension BSON.Document
             switch (try a[+], try b[+])
             {
             case (let a?, let b?):
-                if  a.key == b.key, a.value ~~ b.value
+                if  a.key == b.key, a.value == b.value
                 {
                     continue loop
                 }

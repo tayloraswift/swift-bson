@@ -53,11 +53,11 @@ extension BSON.AnyValue:CustomStringConvertible
     public
     var description:String { self.description(indent: "    ") }
 }
-extension BSON.AnyValue
+extension BSON.AnyValue:Equatable
 {
     /// Performs a type-aware equivalence comparison.
     /// If both operands are a ``document(_:)`` (or ``list(_:)``), performs a recursive
-    /// type-aware comparison by calling `BSON//DocumentView.~~(_:_:)`.
+    /// type-aware comparison by calling ``BSON/Document.==(_:_:)``.
     /// If both operands are a ``string(_:)``, performs unicode-aware string comparison.
     /// If both operands are a ``double(_:)``, performs floating-point-aware
     /// numerical comparison.
@@ -77,49 +77,49 @@ extension BSON.AnyValue
     /// >   Note:
     ///     The embedded UTF-8 string in the deprecated `pointer(_:_:)` variant
     ///     also receives type-aware treatment.
-    @inlinable public static
-    func ~~ (lhs:Self, rhs:BSON.AnyValue) -> Bool
+    @inlinable public
+    static func == (a:Self, b:Self) -> Bool
     {
-        switch (lhs, rhs)
+        switch (a, b)
         {
-        case (.document     (let lhs), .document    (let rhs)):
-            lhs ~~ rhs
-        case (.list         (let lhs), .list        (let rhs)):
-            lhs ~~ rhs
-        case (.binary       (let lhs), .binary      (let rhs)):
-            lhs == rhs
-        case (.bool         (let lhs), .bool        (let rhs)):
-            lhs == rhs
-        case (.decimal128   (let lhs), .decimal128  (let rhs)):
-            lhs == rhs
-        case (.double       (let lhs), .double      (let rhs)):
-            lhs == rhs
-        case (.id           (let lhs), .id          (let rhs)):
-            lhs == rhs
-        case (.int32        (let lhs), .int32       (let rhs)):
-            lhs == rhs
-        case (.int64        (let lhs), .int64       (let rhs)):
-            lhs == rhs
-        case (.javascript   (let lhs), .javascript  (let rhs)):
-            lhs == rhs
-        case (.javascriptScope(let lhs, let lhsCode), .javascriptScope(let rhs, let rhsCode)):
-            lhsCode == rhsCode && lhs ~~ rhs
+        case (.document     (let a), .document    (let b)):
+            a == b
+        case (.list         (let a), .list        (let b)):
+            a == b
+        case (.binary       (let a), .binary      (let b)):
+            a == b
+        case (.bool         (let a), .bool        (let b)):
+            a == b
+        case (.decimal128   (let a), .decimal128  (let b)):
+            a == b
+        case (.double       (let a), .double      (let b)):
+            a == b
+        case (.id           (let a), .id          (let b)):
+            a == b
+        case (.int32        (let a), .int32       (let b)):
+            a == b
+        case (.int64        (let a), .int64       (let b)):
+            a == b
+        case (.javascript   (let a), .javascript  (let b)):
+            a == b
+        case (.javascriptScope(let a, let aCode), .javascriptScope(let b, let bCode)):
+            aCode == bCode && a == b
         case (.max,                     .max):
             true
-        case (.millisecond  (let lhs), .millisecond (let rhs)):
-            lhs.index == rhs.index
+        case (.millisecond  (let a), .millisecond (let b)):
+            a.index == b.index
         case (.min,                     .min):
             true
         case (.null,                    .null):
             true
-        case (.pointer(let lhs, let lhsID), .pointer(let rhs, let rhsID)):
-            lhsID == rhsID && lhs == rhs
-        case (.regex        (let lhs), .regex       (let rhs)):
-            lhs == rhs
-        case (.string       (let lhs), .string      (let rhs)):
-            lhs == rhs
-        case (.timestamp    (let lhs), .timestamp   (let rhs)):
-            lhs == rhs
+        case (.pointer(let a, let aID), .pointer(let b, let bID)):
+            aID == bID && a == b
+        case (.regex        (let a), .regex       (let b)):
+            a == b
+        case (.string       (let a), .string      (let b)):
+            a == b
+        case (.timestamp    (let a), .timestamp   (let b)):
+            a == b
 
         default:
             false

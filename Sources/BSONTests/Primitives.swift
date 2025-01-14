@@ -621,7 +621,7 @@ extension ValidBSON
         #expect(canonical.count == .init(size))
         #expect(document.header == size)
 
-        #expect(expected ~~ document)
+        #expect(expected == document)
         #expect(expected.bytes == document.bytes)
 
         if  let degenerate:String
@@ -632,7 +632,7 @@ extension ValidBSON
 
             let canonicalized:BSON.Document = try document.canonicalized()
 
-            #expect(expected ~~ document)
+            #expect(expected == document)
             #expect(expected.bytes == canonicalized.bytes)
         }
     }
