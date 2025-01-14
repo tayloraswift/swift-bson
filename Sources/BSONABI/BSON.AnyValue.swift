@@ -4,7 +4,7 @@ extension BSON
 {
     /// Any BSON value.
     @frozen public
-    enum AnyValue:Equatable, Sendable
+    enum AnyValue:Sendable
     {
         /// A general embedded document.
         case document(Document)
