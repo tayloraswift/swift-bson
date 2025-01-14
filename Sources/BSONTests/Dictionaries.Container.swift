@@ -23,16 +23,14 @@ extension Dictionaries.Container:BSONDocumentEncodable
 {
     func encode(to bson:inout BSON.DocumentEncoder<CodingKey>)
     {
-        bson[.dictionary] = self.dictionary.unordered
+        bson[.dictionary] = self.dictionary
     }
 }
 extension Dictionaries.Container:BSONDocumentDecodable
 {
     init(bson:BSON.DocumentDecoder<CodingKey>) throws
     {
-        self.init(try bson[.dictionary].decode(
-            as: Dictionary<NestedKey, String>.UnorderedItems.self,
-            with: \.dictionary))
+        self.init(try bson[.dictionary].decode())
     }
 }
 extension Dictionaries.Container

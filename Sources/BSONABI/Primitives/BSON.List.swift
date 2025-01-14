@@ -55,57 +55,6 @@ extension BSON.List
     @inlinable public
     var size:Int { 5 + self.bytes.count }
 }
-
-@available(*, deprecated)
-extension BSON.List:Equatable
-{
-    /// Performs an exact byte-wise comparison on two lists.
-    /// Does not parse or validate the operands.
-    @inlinable public static
-    func == (a:Self, b:Self) -> Bool { a.bytes.elementsEqual(b.bytes) }
-}
-
-extension BSON.List
-{
-    /// Parses this list into key-value pairs in order, yielding each value to the
-    /// provided closure. Parsing a list is slightly faster than parsing a general
-    /// ``Document``, because this method ignores the document keys.
-    ///
-    /// This method does *not* perform any key validation.
-    ///
-    /// Unlike ``parse``, this method does not allocate storage for the parsed
-    /// elements.
-    ///
-    /// >   Complexity:
-    ///     O(*n*), where *n* is the size of this list’s backing storage.
-    @available(*, deprecated)
-    @inlinable public
-    func parse(to decode:(_ element:BSON.AnyValue) throws -> ()) throws
-    {
-        var input:BSON.Input = .init(self.bytes)
-        while let code:UInt8 = input.next()
-        {
-            let type:BSON.AnyType = try .init(code: code)
-            try input.parse(through: 0x00)
-            try decode(try input.parse(variant: type))
-        }
-    }
-    @available(*, deprecated)
-    @inlinable public
-    func parse<T>(_ transform:(_ element:BSON.AnyValue) throws -> T) throws -> [T]
-    {
-        var elements:[T] = []
-        try self.parse
-        {
-            elements.append(try transform($0))
-        }
-        return elements
-    }
-
-    @available(*, deprecated)
-    @inlinable public
-    func parse() throws -> [BSON.AnyValue] { try self.parse { $0 } }
-}
 extension BSON.List
 {
     /// Creates a list-document containing the given elements.

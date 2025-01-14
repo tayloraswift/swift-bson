@@ -1,70 +1,66 @@
 extension BSON
 {
-    /// A thin wrapper around a native Swift array providing an efficient decoding
-    /// interface for a ``BSON/List``.
-    @available(*, deprecated, renamed: "ListDecoder_")
+    /// An iterable type that produces this list’s elements, with associated indices. Parsing a
+    /// list is slightly faster than parsing a general ``Document``, because this method ignores
+    /// the document keys.
+    ///
+    /// This type does *not* perform any key validation.
     @frozen public
     struct ListDecoder
     {
-        public
-        var elements:[BSON.AnyValue]
+        @usableFromInline
+        var input:List.Iterator
+        @usableFromInline
+        var index:Int
 
-        @inlinable public
-        init(_ elements:[BSON.AnyValue])
+        @inlinable
+        init(input:List.Iterator)
         {
-            self.elements = elements
+            self.input = input
+            self.index = 0
         }
     }
 }
-@available(*, deprecated)
-extension BSON.ListDecoder:BSON.Decoder
-{
-    @inlinable public
-    init(parsing bson:borrowing BSON.AnyValue) throws
-    {
-        try self.init(parsing: try .init(bson: copy bson))
-    }
-}
-@available(*, deprecated)
 extension BSON.ListDecoder
 {
-    /// Attempts to create a list decoder from the given list.
-    ///
-    /// To get a plain array with no decoding interface, call the list’s ``List/parse``
-    /// method instead. Alternatively, you can use this function and access the
-    /// ``elements`` property afterwards.
-    ///
-    /// >   Complexity:
-    //      O(*n*), where *n* is the number of elements in the source list.
     @inlinable public
-    init(parsing bson:borrowing BSON.List) throws
+    var position:Int { self.index }
+
+    @inlinable public
+    subscript(_:(BSON.EndIndex) -> ()) -> BSON.OptionalDecoder<Int>
     {
-        self.init(try bson.parse())
+        mutating get throws
+        {
+            guard
+            let value:BSON.AnyValue = try self.input.next()
+            else
+            {
+                return .init(key: self.index, value: nil)
+            }
+            defer
+            {
+                self.index += 1
+            }
+            return .init(key: self.index, value: value)
+        }
     }
 
-    /// The shape of the list being decoded.
     @inlinable public
-    var shape:BSON.Shape
+    subscript(_:(BSON.EndIndex) -> ()) -> BSON.FieldDecoder<Int>?
     {
-        .init(length: self.elements.count)
-    }
-}
-@available(*, deprecated)
-extension BSON.ListDecoder:RandomAccessCollection
-{
-    @inlinable public
-    var startIndex:Int
-    {
-        self.elements.startIndex
-    }
-    @inlinable public
-    var endIndex:Int
-    {
-        self.elements.endIndex
-    }
-    @inlinable public
-    subscript(index:Int) -> BSON.FieldDecoder<Int>
-    {
-        .init(key: index, value: self.elements[index])
+        mutating get throws
+        {
+            guard
+            let value:BSON.AnyValue = try self.input.next()
+            else
+            {
+                return nil
+            }
+            defer
+            {
+                self.index += 1
+            }
+            return .init(key: self.index, value: value)
+        }
     }
 }

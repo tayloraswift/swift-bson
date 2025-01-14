@@ -87,19 +87,14 @@ struct ModelWithCollections:BSONDocumentEncodable, BSONDocumentDecodable
 
     func encode(to bson:inout BSON.DocumentEncoder<CodingKey>)
     {
-        bson[.x] = self.x.isEmpty ? nil : self.x.unordered
-        bson[.y] = self.y.isEmpty ? nil : self.y.unordered
+        bson[.x] = self.x.isEmpty ? nil : self.x
+        bson[.y] = self.y.isEmpty ? nil : self.y
     }
 
     init(bson:BSON.DocumentDecoder<CodingKey>) throws
     {
-        self.x = try bson[.x]?.decode(
-            as: Dictionary<BSON.Key, Int32>.UnorderedItems.self,
-            with: \.dictionary) ?? [:]
-
-        self.y = try bson[.y]?.decode(
-            as: Set<Double>.UnorderedElements.self,
-            with: \.set) ?? []
+        self.x = try bson[.x]?.decode() ?? [:]
+        self.y = try bson[.y]?.decode() ?? []
     }
 }
 

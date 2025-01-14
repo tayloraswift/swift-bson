@@ -23,14 +23,14 @@ extension Sets.Container:BSONDocumentEncodable
 {
     func encode(to bson:inout BSON.DocumentEncoder<CodingKey>)
     {
-        bson[.set] = self.set.unordered
+        bson[.set] = self.set
     }
 }
 extension Sets.Container:BSONDocumentDecodable
 {
     init(bson:BSON.DocumentDecoder<CodingKey>) throws
     {
-        self.init(try bson[.set].decode(as: Set<String>.UnorderedElements.self, with: \.set))
+        self.init(try bson[.set].decode())
     }
 }
 extension Sets.Container

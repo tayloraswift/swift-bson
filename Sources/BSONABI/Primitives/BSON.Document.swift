@@ -76,67 +76,6 @@ extension BSON.Document
         self.output.append(other.bytes)
     }
 }
-
-@available(*, deprecated)
-extension BSON.Document:Equatable
-{
-    /// Performs an exact byte-wise comparison on two documents. Does not parse or validate the
-    /// operands. Documents with the same fields in different orders will compare unequal!
-    @inlinable public static
-    func == (a:Self, b:Self) -> Bool { a.bytes.elementsEqual(b.bytes) }
-}
-
-extension BSON.Document
-{
-    /// Parses this document into key-value pairs in order, yielding each key-value
-    /// pair to the provided closure.
-    ///
-    /// Unlike ``parse(_:)``, this method does not allocate storage for the parsed key-value
-    /// pairs. (But it does allocate storage to provide a ``String`` representation for
-    /// each visited key.)
-    ///
-    /// >   Complexity:
-    ///     O(*n*), where *n* is the size of this document’s backing storage.
-    @available(*, deprecated)
-    @inlinable public
-    func parse<CodingKey>(to decode:(CodingKey, BSON.AnyValue) throws -> ()) throws
-        where CodingKey:RawRepresentable<String>
-    {
-        var input:BSON.Input = .init(self.bytes)
-        while let code:UInt8 = input.next()
-        {
-            let type:BSON.AnyType = try .init(code: code)
-            let key:String = try input.parse(as: String.self)
-            //  We must parse the value always, even if we are ignoring the key
-            let value:BSON.AnyValue = try input.parse(variant: type)
-
-            if  let key:CodingKey = .init(rawValue: key)
-            {
-                try decode(key, value)
-            }
-        }
-    }
-    /// Splits this document’s inline key-value pairs into an array.
-    ///
-    /// Calling this convenience method is the same as calling ``parse(to:)`` and
-    /// collecting the yielded key-value pairs in an array.
-    ///
-    /// >   Complexity:
-    ///     O(*n*), where *n* is the size of this document’s backing storage.
-    @available(*, deprecated)
-    @inlinable public
-    func parse<CodingKey, T>(
-        _ transform:(_ key:CodingKey, _ value:BSON.AnyValue) throws -> T) throws -> [T]
-        where CodingKey:RawRepresentable<String>
-    {
-        var elements:[T] = []
-        try self.parse
-        {
-            elements.append(try transform($0, $1))
-        }
-        return elements
-    }
-}
 extension BSON.Document
 {
     /// Creates a document containing the given fields, making two passes over

@@ -1,3 +1,3 @@
-extension Array:BSONDecodable, BSONListDecodable_ where Element:BSONDecodable
+extension Array:BSONDecodable, BSONListDecodable where Element:BSONDecodable
 {
 }

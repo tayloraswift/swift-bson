@@ -23,7 +23,7 @@ extension BSON.List
     var values:Iterator { .init(input: .init(self.bytes)) }
 
     @inlinable public
-    var parsed:BSON.ListDecoder_ { .init(input: self.values) }
+    var parsed:BSON.ListDecoder { .init(input: self.values) }
 
     /// Splits this list’s inline key-value pairs into an array containing the
     /// values only. Parsing a list is slightly faster than parsing a general
@@ -43,19 +43,5 @@ extension BSON.List
             parsed.append(next)
         }
         return parsed
-    }
-
-    /// Decorates the ``BSON.AnyValue``-yielding overload of this method with one that
-    /// enumerates the elements and yields them as fields.
-    @available(*, deprecated, message: "use `parsed` instead")
-    @inlinable public
-    func parse(to decode:(_ field:BSON.FieldDecoder<Int>) throws -> ()) throws
-    {
-        var index:Int = 0
-        try self.parse
-        {
-            try decode(.init(key: index, value: $0))
-            index += 1
-        }
     }
 }

@@ -12,7 +12,7 @@ extension BSON.List:CustomStringConvertible
     public
     var description:String { self.description(indent: "    ") }
 }
-extension BSON.List
+extension BSON.List:Equatable
 {
     /// Performs a type-aware equivalence comparison by parsing each operand and recursively
     /// comparing the elements, ignoring list key names. Returns `false` if either
@@ -23,16 +23,16 @@ extension BSON.List
     /// of deprecated BSON variants. For example, a value of the deprecated `symbol` type
     /// will compare equal to a `BSON//Value.string(_:)` value with the same contents.
     @inlinable public
-    static func ~~ (a:Self, b:Self) -> Bool
+    static func == (a:Self, b:Self) -> Bool
     {
-        var a:BSON.ListDecoder_ = a.parsed
-        var b:BSON.ListDecoder_ = b.parsed
+        var a:BSON.ListDecoder = a.parsed
+        var b:BSON.ListDecoder = b.parsed
         loop: do
         {
             switch (try a[+]?.value, try b[+]?.value)
             {
             case (let a?, let b?):
-                if  a ~~ b
+                if  a == b
                 {
                     continue loop
                 }
@@ -60,7 +60,7 @@ extension BSON.List
     func canonicalized() throws -> Self
     {
         var canonical:[BSON.AnyValue] = []
-        var elements:BSON.ListDecoder_ = self.parsed
+        var elements:BSON.ListDecoder = self.parsed
         while let next:BSON.FieldDecoder<Int> = try elements[+]
         {
             canonical.append(try next.value.canonicalized())

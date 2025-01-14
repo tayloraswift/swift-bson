@@ -46,13 +46,6 @@ extension BSON.ListEncoder
             yield &self.output[with: .init(index: self.count)]
         }
     }
-
-    @available(*, deprecated, renamed: "subscript(_:)")
-    @inlinable public mutating
-    func append(with encode:(inout BSON.FieldEncoder) -> ())
-    {
-        encode(&self[+])
-    }
 }
 extension BSON.ListEncoder
 {

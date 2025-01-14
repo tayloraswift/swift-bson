@@ -44,7 +44,7 @@ struct NumbersExpanded2:BSONListEncodable
     //  snippet.end
 }
 //  snippet.LIST_PAIR
-struct FirstAndLastName:BSONListEncodable, BSONListDecodable_
+struct FirstAndLastName:BSONListEncodable, BSONListDecodable
 {
     let firstName:String
     let lastName:String
@@ -55,7 +55,7 @@ struct FirstAndLastName:BSONListEncodable, BSONListDecodable_
         bson[+] = self.lastName
     }
 
-    init(bson:consuming BSON.ListDecoder_) throws
+    init(bson:consuming BSON.ListDecoder) throws
     {
         self.firstName = try bson[+].decode()
         self.lastName = try bson[+].decode()
