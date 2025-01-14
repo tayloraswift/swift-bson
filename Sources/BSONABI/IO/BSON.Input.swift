@@ -7,9 +7,9 @@ extension BSON
     @frozen public
     struct Input:Sendable
     {
-        public
-        let source:ArraySlice<UInt8>
-        public
+        @usableFromInline
+        let bytes:ArraySlice<UInt8>
+        @usableFromInline
         var index:Int
 
         /// Creates a parsing input view over the given `source` data,
@@ -17,8 +17,8 @@ extension BSON
         @inlinable public
         init(_ source:ArraySlice<UInt8>)
         {
-            self.source = source
-            self.index = self.source.startIndex
+            self.bytes = source
+            self.index = self.bytes.startIndex
         }
     }
 }
@@ -28,17 +28,17 @@ extension BSON.Input
     @inlinable public mutating
     func next() -> UInt8?
     {
-        guard self.index < self.source.endIndex
+        guard self.index < self.bytes.endIndex
         else
         {
             return nil
         }
         defer
         {
-            self.source.formIndex(after: &self.index)
+            self.bytes.formIndex(after: &self.index)
         }
 
-        return self.source[self.index]
+        return self.bytes[self.index]
     }
     /// Advances the current index until encountering the specified `byte`.
     /// After this method returns, ``index`` points to the byte after
@@ -52,13 +52,13 @@ extension BSON.Input
     func parse(through byte:UInt8) throws -> Range<Int>
     {
         let start:Int = self.index
-        while self.index < self.source.endIndex
+        while self.index < self.bytes.endIndex
         {
             defer
             {
-                self.source.formIndex(after: &self.index)
+                self.bytes.formIndex(after: &self.index)
             }
-            if  self.source[self.index] == byte
+            if  self.bytes[self.index] == byte
             {
                 return start ..< self.index
             }
@@ -69,18 +69,18 @@ extension BSON.Input
     @inlinable public mutating
     func parse(as _:String.Type = String.self) throws -> String
     {
-        .init(decoding: self.source[try self.parse(through: 0x00)], as: Unicode.UTF8.self)
+        .init(decoding: self.bytes[try self.parse(through: 0x00)], as: Unicode.UTF8.self)
     }
     /// Parses a MongoDB object identifier.
     @inlinable public mutating
     func parse(as _:BSON.Identifier.Type = BSON.Identifier.self) throws -> BSON.Identifier
     {
         let start:Int = self.index
-        if  let end:Int = self.source.index(self.index, offsetBy: 12,
-                limitedBy: self.source.endIndex)
+        if  let end:Int = self.bytes.index(self.index, offsetBy: 12,
+                limitedBy: self.bytes.endIndex)
         {
             self.index = end
-            return .init { $0.copyBytes(from: self.source[start ..< end]) }
+            return .init { $0.copyBytes(from: self.bytes[start ..< end]) }
         }
         else
         {
@@ -128,16 +128,16 @@ extension BSON.Input
         where LittleEndian:FixedWidthInteger
     {
         let start:Int = self.index
-        if  let end:Int = self.source.index(self.index,
+        if  let end:Int = self.bytes.index(self.index,
                 offsetBy: MemoryLayout<LittleEndian>.size,
-                limitedBy: self.source.endIndex)
+                limitedBy: self.bytes.endIndex)
         {
             self.index = end
             return withUnsafeTemporaryAllocation(
                 byteCount: MemoryLayout<LittleEndian>.size,
                 alignment: MemoryLayout<LittleEndian>.alignment)
             {
-                $0.copyBytes(from: self.source[start ..< end])
+                $0.copyBytes(from: self.bytes[start ..< end])
                 return .init(littleEndian: $0.load(as: LittleEndian.self))
             }
         }
@@ -159,11 +159,11 @@ extension BSON.Input
             throw BSON.HeaderError<Frame>.init(length: header)
         }
         let start:Int = self.index
-        if  let end:Int = self.source.index(start, offsetBy: stride,
-                limitedBy: self.source.endIndex)
+        if  let end:Int = self.bytes.index(start, offsetBy: stride,
+                limitedBy: self.bytes.endIndex)
         {
             self.index = end
-            return self.source[start ..< self.source.index(start, offsetBy: count)]
+            return self.bytes[start ..< self.bytes.index(start, offsetBy: count)]
         }
         else
         {
@@ -186,14 +186,14 @@ extension BSON.Input
     @inlinable public
     var remaining:ArraySlice<UInt8>
     {
-        self.source.suffix(from: self.index)
+        self.bytes.suffix(from: self.index)
     }
 
     /// Asserts that there is no input remaining.
     @inlinable public
     func finish() throws
     {
-        if self.index != self.source.endIndex
+        if self.index != self.bytes.endIndex
         {
             throw self.expected(.end)
         }
@@ -204,7 +204,7 @@ extension BSON.Input
     func expected(_ expectation:BSON.InputError.Expectation) -> BSON.InputError
     {
         .init(expected: expectation,
-            encountered: self.source.distance(from: self.index, to: self.source.endIndex))
+            encountered: self.bytes.distance(from: self.index, to: self.bytes.endIndex))
     }
 }
 
