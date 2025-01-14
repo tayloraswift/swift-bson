@@ -31,15 +31,11 @@ Native Swift arrays will encode themselves as BSON lists. Some applications find
 
 ### Sets and Dictionaries
 
-For many applications, serializing ``Dictionary`` is problematic because its key-value pairs do not have a deterministic order. This is bad for caching. ``Set`` suffers from a similar problem.
-
-Most people who want to encode a dictionary actually want to encode a nested document instead. However, if you really do want to store a dictionary, you can use the ``Dictionary.UnorderedItems`` type, which you can obtain from the ``Dictionary.unordered`` computed property.
-
-To store a set, use ``Set.UnorderedElements``, which you can obtain from the ``Set.unordered`` computed property.
+For many applications, serializing ``Dictionary`` is problematic because its key-value pairs do not have a deterministic order. This is bad for caching. ``Set`` suffers from a similar problem. That said, both types are still round-trippable provided their elements are themselves round-trippable.
 
 @Snippet(id: Examples, slice: MODEL_UNORDERED)
 
-The ``Dictionary.UnorderedItems`` is only available when the dictionary’s key type conforms to ``BSON.Keyspace``. This protocol refines ``RawRepresentable``, and imposes the additional semantic requirement that the ``RawRepresentable.rawValue`` string must not contain null bytes.
+The ``Dictionary`` conformance is only available when the dictionary’s key type conforms to ``BSON.Keyspace``. This protocol refines ``RawRepresentable``, and imposes the additional semantic requirement that the ``RawRepresentable.rawValue`` string must not contain null bytes.
 
 >   Important:
 >   Returning a string with null bytes from ``BSON.Keyspace.rawValue`` will crash at runtime, because null bytes in document keys can be exploited to perform SQL injection attacks against MongoDB.

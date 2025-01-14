@@ -4,8 +4,8 @@ extension BSON
     ///
     /// Normally, the library ignores unrecognized document keys, in order to facilitate schema
     /// evolution. However, when using documents to represent arbitrary associative mappings,
-    /// such as ``Dictionary.UnorderedItems``, it is often preferable to fail decoding
-    /// instead of silently dropping items.
+    /// such as ``Dictionary``, it is often preferable to fail decoding instead of silently
+    /// dropping items.
     @frozen public
     struct KeyspaceError:Error
     {
