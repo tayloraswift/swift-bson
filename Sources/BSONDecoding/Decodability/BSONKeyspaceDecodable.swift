@@ -2,7 +2,7 @@
 public
 protocol BSONKeyspaceDecodable<CodingKey>:BSONDecodable
 {
-    associatedtype CodingKey:RawRepresentable<String> & Sendable = BSON.Key
+    associatedtype CodingKey:BSON.Keyspace = BSON.Key
 
     init(bson:consuming BSON.KeyspaceDecoder<CodingKey>) throws
 }
