@@ -2,6 +2,8 @@ import UnixTime
 
 extension BSON
 {
+    /// A type for serializing raw BSON tokens. This is used to implement BSON DSLs, and most
+    /// users of this library should not need to interact with it directly.
     @frozen public
     struct Output:Sendable
     {

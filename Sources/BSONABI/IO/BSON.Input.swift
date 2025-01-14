@@ -2,7 +2,7 @@ import UnixTime
 
 extension BSON
 {
-    /// A type for managing BSON parsing state. Most users of this module
+    /// A type for managing BSON parsing state. Most users of this library
     /// should not need to interact with it directly.
     @frozen public
     struct Input:Sendable
