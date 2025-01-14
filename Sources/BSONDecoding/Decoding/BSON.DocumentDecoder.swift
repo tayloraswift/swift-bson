@@ -48,8 +48,8 @@ extension BSON.DocumentDecoder
     /// with the behavior of ``String.==(_:_:) [9812Z]``, since that operator
     /// compares grapheme clusters and not UTF-8 code units.
     ///
-    /// For example, if a document vends separate keys for [`"\u{E9}"`]() ([`"é"`]()) and
-    /// [`"\u{65}\u{301}"`]() (also [`"é"`](), perhaps, because the document is
+    /// For example, if a document vends separate keys for `"\u{E9}" (`"é") and
+    /// `"\u{65}\u{301}" (also `"é"`, perhaps, because the document is
     /// being used to bootstrap a unicode table), uniquing them by ``String``
     /// comparison would drop one of the values.
     ///

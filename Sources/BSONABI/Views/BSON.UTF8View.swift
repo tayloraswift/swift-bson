@@ -137,7 +137,7 @@ extension BSON.UTF8View:CustomStringConvertible
 extension BSON.UTF8View
 {
     /// The length that would be encoded in this string’s prefixed header.
-    /// Equal to [`self.slice.count + 1`]().
+    /// Equal to `self.bytes.count + 1`.
     @inlinable public
     var header:Int32
     {

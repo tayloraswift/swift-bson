@@ -1,7 +1,7 @@
 extension BSON.Regex
 {
     /// A MongoDB regex matching option.
-    @frozen public 
+    @frozen public
     enum Option:UInt8, CaseIterable, Hashable, Sendable
     {
         /// Enables case-insensitive matching.
@@ -10,7 +10,7 @@ extension BSON.Regex
         case l = 0b000010
         /// Enables multiline matching.
         case m = 0b000100
-        /// Enables dotall mode. ([`'.'`]() matches everything.)
+        /// Enables dotall mode. (`'.'` matches everything.)
         case s = 0b001000
         /// Enables unicode awareness for `\w`, `\W`, etc.
         case u = 0b010000
@@ -18,13 +18,13 @@ extension BSON.Regex
         case x = 0b100000
     }
     /// A set of MongoDB regex matching options.
-    @frozen public 
+    @frozen public
     struct Options:OptionSet, Sendable
     {
         public
         let rawValue:UInt8
 
-        @inlinable public 
+        @inlinable public
         init(rawValue:UInt8)
         {
             self.rawValue = rawValue
