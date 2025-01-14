@@ -47,11 +47,14 @@ The JSON equivalent to the BSON it would produce would look something like this:
 
 The interface for decoding BSON lists is ``BSON.ListDecoder``. You receive an instance of this type by conforming to the ``BSONListDecodable`` protocol.
 
-The ``BSON.ListDecoder`` type’s job is to provide a random-access intermediate for list decoding. Thus, it allocates a Swift array internally to index the positions of the list elements within the underlying BSON buffer.
+The ``BSON.ListDecoder`` type’s job is to provide a sequential iterator for decoding list elements. Thus, it allocates no internal structures to index the positions of the list elements within the underlying BSON buffer.
 
 You would usually use ``BSONListDecodable`` when you expect a list of a fixed size, or a length that is a multiple of some fixed stride. Here’s an example of a type `FirstAndLastName` that round-trips a pair of strings:
 
 @Snippet(id: Patterns, slice: LIST_PAIR)
+
+It is idiomatic to optionally decode the end of the list to ``Never`` to ensure that the list is fully consumed. This is a safety feature that prevents you from accidentally ignoring extra trailing elements in the BSON list.
+
 
 ### Best Practices
 
@@ -69,4 +72,4 @@ In virtually all remaining cases, ``Array`` should be your preferred abstraction
 
 Some Swift data structures (such as ``Set``) do not have a deterministic order.
 
-The swift-bson library provides a ``BSONDecodable`` implementation for ``Set`` through ``Set.UnorderedElements``, which can save you an array allocation when performing one-way BSON decoding. Keep in mind though, that round-tripping ``Set`` is bad for cache performance, since the output BSON will be different every time.
+The swift-bson library provides ``BSONDecodable`` and ``BSONEncodable`` implementations for ``Set``, which can save you an array allocation when performing one-way BSON decoding. Keep in mind though, that persisting ``Set`` is bad for cache performance, since the output BSON will be different every time.
