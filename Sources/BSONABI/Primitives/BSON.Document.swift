@@ -44,7 +44,7 @@ extension BSON.Document:BSON.BufferTraversable
     /// The raw data backing this document. This slice *does not* include the trailing null byte
     /// that typically appears after its inline field list.
     @inlinable public
-    var bytes:ArraySlice<UInt8> { self.output.destination }
+    var bytes:ArraySlice<UInt8> { self.output.bytes }
 }
 extension BSON.Document
 {
@@ -88,11 +88,11 @@ extension BSON.Document
         var output:BSON.Output = .init(capacity: size)
             output.serialize(fields: fields)
 
-        assert(output.destination.count == size, """
-            precomputed size (\(size)) does not match output size (\(output.destination.count))
+        assert(output.bytes.count == size, """
+            precomputed size (\(size)) does not match output size (\(output.bytes.count))
             """)
 
-        self.init(bytes: output.destination)
+        self.init(bytes: output.bytes)
     }
 
     /// Creates a document containing a single key-value pair.

@@ -23,18 +23,18 @@ extension BSON.BinaryEncoder
     {
         get
         {
-            .init(unchecked: self.output.destination[self.first])
+            .init(unchecked: self.output.bytes[self.first])
         }
         set(value)
         {
-            self.output.destination[self.first] = value.rawValue
+            self.output.bytes[self.first] = value.rawValue
         }
     }
 
     @inlinable
     var bytes:ArraySlice<UInt8>
     {
-        self.output.destination[self.output.destination.index(after: self.first)...]
+        self.output.bytes[self.output.bytes.index(after: self.first)...]
     }
 }
 extension BSON.BinaryEncoder:BSON.Encoder
@@ -45,7 +45,7 @@ extension BSON.BinaryEncoder:BSON.Encoder
     init(_ output:consuming BSON.Output)
     {
         let subtype:BSON.BinarySubtype = .generic
-        let index:Int = output.destination.endIndex
+        let index:Int = output.bytes.endIndex
         output.append(subtype.rawValue)
 
         self.init(output, first: index)

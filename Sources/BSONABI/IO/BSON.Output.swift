@@ -6,14 +6,14 @@ extension BSON
     struct Output:Sendable
     {
         public
-        var destination:ArraySlice<UInt8>
+        var bytes:ArraySlice<UInt8>
 
         /// Create an output with a pre-allocated destination buffer. The buffer
         /// does *not* need to be empty, and existing data will not be cleared.
         @inlinable public
-        init(preallocated destination:ArraySlice<UInt8>)
+        init(preallocated bytes:ArraySlice<UInt8>)
         {
-            self.destination = destination
+            self.bytes = bytes
         }
 
         /// Create an empty output, reserving enough space for the specified
@@ -25,8 +25,8 @@ extension BSON
         @inlinable public
         init(capacity:Int)
         {
-            self.destination = .init()
-            self.destination.reserveCapacity(capacity)
+            self.bytes = .init()
+            self.bytes.reserveCapacity(capacity)
         }
     }
 }
@@ -37,31 +37,31 @@ extension BSON.Output:BSON.OutputStream
     @inlinable public mutating
     func reserve(another bytes:Int)
     {
-        self.destination.reserveCapacity(self.destination.count + bytes)
+        self.bytes.reserveCapacity(self.bytes.count + bytes)
     }
 
     /// Appends a single byte to the output destination.
     @inlinable public mutating
     func append(_ byte:UInt8)
     {
-        self.destination.append(byte)
+        self.bytes.append(byte)
     }
     /// Appends a sequence of bytes to the output destination.
     @inlinable public mutating
     func append(_ bytes:some Sequence<UInt8>)
     {
-        self.destination.append(contentsOf: bytes)
+        self.bytes.append(contentsOf: bytes)
     }
 }
 extension BSON.Output
 {
-    @inlinable public mutating
+    @inlinable mutating
     func serialize(type:BSON.AnyType)
     {
         self.append(type.rawValue)
     }
 
-    @inlinable public mutating
+    @inlinable mutating
     func serialize(id:BSON.Identifier)
     {
         withUnsafeBytes(of: id.bitPattern)
@@ -73,7 +73,7 @@ extension BSON.Output
 extension BSON.Output
 {
     /// Serializes the given variant value, without encoding its type.
-    @inlinable public mutating
+    @inlinable mutating
     func serialize(variant:BSON.AnyValue)
     {
         switch variant
@@ -144,14 +144,14 @@ extension BSON.Output
     /// Serializes the raw type code of the given variant value, followed by
     /// the field key (with a trailing null byte), followed by the variant value
     /// itself.
-    @inlinable public mutating
+    @inlinable mutating
     func serialize(key:BSON.Key, value:BSON.AnyValue)
     {
         self.serialize(type: value.type)
         self.serialize(cString: key.rawValue)
         self.serialize(variant: value)
     }
-    @inlinable public mutating
+    @inlinable mutating
     func serialize(fields:some Sequence<(key:BSON.Key, value:BSON.AnyValue)>)
     {
         for (key, value):(BSON.Key, BSON.AnyValue) in fields
@@ -230,7 +230,7 @@ extension BSON.Output
     {
         mutating _read
         {
-            let header:Int = self.destination.endIndex
+            let header:Int = self.bytes.endIndex
 
             self.append(0x00)
             self.append(0x00)
@@ -259,7 +259,7 @@ extension BSON.Output
 
         _modify
         {
-            let header:Int = self.destination.endIndex
+            let header:Int = self.bytes.endIndex
 
             // make room for the length header
             self.append(0x00)
@@ -270,15 +270,15 @@ extension BSON.Output
             defer
             {
                 /// Make sure the caller has not cleared the buffer.
-                assert(self.destination.index(header, offsetBy: 4) <= self.destination.endIndex)
+                assert(self.bytes.index(header, offsetBy: 4) <= self.bytes.endIndex)
 
                 if  let trailer:UInt8 = frame.trailer
                 {
                     self.append(trailer)
                 }
 
-                let written:Int = self.destination.distance(from: header,
-                    to: self.destination.endIndex)
+                let written:Int = self.bytes.distance(from: header,
+                    to: self.bytes.endIndex)
 
                 self.update(length: written - frame.skipped - 4, at: header)
             }
@@ -299,8 +299,8 @@ extension BSON.Output
             var index:Int = header
             for byte:UInt8 in $0
             {
-                self.destination[index] = byte
-                self.destination.formIndex(after: &index)
+                self.bytes[index] = byte
+                self.bytes.formIndex(after: &index)
             }
         }
     }

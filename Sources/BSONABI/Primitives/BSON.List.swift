@@ -36,7 +36,7 @@ extension BSON.List:BSON.BufferTraversable
     /// The raw data backing this list. This collection *does not* include the trailing null
     /// byte that appears after its inline elements list.
     @inlinable public
-    var bytes:ArraySlice<UInt8> { self.output.destination }
+    var bytes:ArraySlice<UInt8> { self.output.bytes }
 }
 extension BSON.List
 {
