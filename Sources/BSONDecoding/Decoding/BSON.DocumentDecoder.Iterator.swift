@@ -3,10 +3,10 @@ extension BSON.DocumentDecoder
     @frozen public
     struct Iterator
     {
-        @usableFromInline internal
+        @usableFromInline
         var base:Dictionary<CodingKey, BSON.AnyValue>.Iterator
 
-        @inlinable internal
+        @inlinable
         init(base:Dictionary<CodingKey, BSON.AnyValue>.Iterator)
         {
             self.base = base

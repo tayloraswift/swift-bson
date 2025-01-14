@@ -3,7 +3,7 @@ extension BSON
     @frozen public
     struct DocumentEncoder<CodingKey> where CodingKey:RawRepresentable<String>
     {
-        @usableFromInline internal
+        @usableFromInline
         var output:BSON.Output
 
         @inlinable public
