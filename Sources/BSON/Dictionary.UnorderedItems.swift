@@ -13,14 +13,9 @@ extension Dictionary
         }
     }
 }
-extension Dictionary.UnorderedItems:BSONEncodable where Value:BSONEncodable
+extension Dictionary.UnorderedItems:BSONEncodable, BSONDocumentEncodable
+    where Value:BSONEncodable
 {
-    @inlinable public
-    func encode(to field:inout BSON.FieldEncoder)
-    {
-        self.encode(to: &field[as: BSON.DocumentEncoder<Key>.self])
-    }
-
     @inlinable public
     func encode(to bson:inout BSON.DocumentEncoder<Key>)
     {
@@ -30,20 +25,14 @@ extension Dictionary.UnorderedItems:BSONEncodable where Value:BSONEncodable
         }
     }
 }
-extension Dictionary.UnorderedItems:BSONDecodable where Value:BSONDecodable
+extension Dictionary.UnorderedItems:BSONDecodable, BSONKeyspaceDecodable
+    where Value:BSONDecodable
 {
     @inlinable public
-    init(bson:BSON.AnyValue) throws
-    {
-        try self.init(bson: try .init(bson: consume bson))
-    }
-
-    @inlinable public
-    init(bson:BSON.Document) throws
+    init(bson:consuming BSON.KeyspaceDecoder<Key>) throws
     {
         var index:[Key: Value] = [:]
-        var items:BSON.KeyspaceDecoder<Key> = bson.parsed()
-        while let field:BSON.FieldDecoder<Key> = try items[+]
+        while let field:BSON.FieldDecoder<Key> = try bson[+]
         {
             guard
             case nil = index.updateValue(try field.decode(to: Value.self), forKey: field.key)
