@@ -26,7 +26,7 @@ extension BSON.BinaryBuffer
     @inlinable public
     init(bytes:ArraySlice<UInt8>) throws
     {
-        let shape:BSON.Shape = .init(length: bytes.count)
+        let shape:BSON.BinaryShape = .init(bytes: bytes.count)
         let count:Int = try shape.expect(multipleOf: MemoryLayout<Element>.size)
         self.init(bytes: bytes, count: count)
     }

@@ -29,7 +29,7 @@ extension BSON.BinaryDecoder
     var bytes:ArraySlice<UInt8> { self.view.bytes }
 
     @inlinable public
-    var shape:BSON.Shape { .init(length: self.view.bytes.count) }
+    var shape:BSON.BinaryShape { .init(bytes: self.view.bytes.count) }
 
     @inlinable public
     var subtype:BSON.BinarySubtype { self.view.subtype }

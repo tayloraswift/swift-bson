@@ -33,9 +33,6 @@ let package:Package = .init(name: "swift-bson",
         .target(name: "BSONABI",
             dependencies: [
                 .product(name: "UnixTime", package: "swift-unixtime"),
-            ],
-            exclude: [
-                "README.md",
             ]),
 
         .target(name: "BSONArrays",
@@ -47,17 +44,11 @@ let package:Package = .init(name: "swift-bson",
         .target(name: "BSONDecoding",
             dependencies: [
                 .target(name: "BSONABI"),
-            ],
-            exclude: [
-                "README.md",
             ]),
 
         .target(name: "BSONEncoding",
             dependencies: [
                 .target(name: "BSONABI"),
-            ],
-            exclude: [
-                "README.md",
             ]),
 
         .target(name: "BSONLegacy",
@@ -68,9 +59,6 @@ let package:Package = .init(name: "swift-bson",
         .target(name: "BSONLiterals",
             dependencies: [
                 .target(name: "BSONABI"),
-            ],
-            exclude: [
-                "README.md",
             ]),
 
         .target(name: "BSONReflection",

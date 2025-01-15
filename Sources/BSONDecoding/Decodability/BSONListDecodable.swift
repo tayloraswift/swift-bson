@@ -1,8 +1,6 @@
 import BSONABI
 
-/// A type that can be decoded from a BSON list-decoder. You should only conform to this
-/// protocol if you need random-access decoding. Many arraylike data structures are
-/// more-efficiently decoded from a ``BSON.List`` at the ``BSONDecodable`` level.
+/// A type that can be decoded from a BSON ``BSON.ListDecoder``.
 public
 protocol BSONListDecodable:BSONDecodable
 {

@@ -15,7 +15,7 @@ extension BSON
         /// Creates an identifier with the given bit pattern. Do not use this
         /// initializer to create an identifier from integer literals; use
         /// ``init(_:_:_:)``, which accounts for platform endianness, instead.
-        @inlinable internal
+        @inlinable
         init(bitPattern:(UInt32, UInt32, UInt32))
         {
             self.bitPattern = bitPattern

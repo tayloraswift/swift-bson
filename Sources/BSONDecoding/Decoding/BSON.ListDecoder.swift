@@ -4,7 +4,7 @@ extension BSON
     /// list is slightly faster than parsing a general ``Document``, because this method ignores
     /// the document keys.
     ///
-    /// This type does *not* perform any key validation.
+    /// This type does not perform any key validation.
     @frozen public
     struct ListDecoder
     {
@@ -27,7 +27,7 @@ extension BSON.ListDecoder
     var position:Int { self.index }
 
     @inlinable public
-    subscript(_:(BSON.EndIndex) -> ()) -> BSON.OptionalDecoder<Int>
+    subscript(_:(BSON.EndIndex) -> ()) -> BSON.FieldAccessor<Int>
     {
         mutating get throws
         {

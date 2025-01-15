@@ -48,8 +48,8 @@ extension BSON.DocumentDecoder
     /// with the behavior of ``String.==(_:_:) [9812Z]``, since that operator
     /// compares grapheme clusters and not UTF-8 code units.
     ///
-    /// For example, if a document vends separate keys for [`"\u{E9}"`]() ([`"é"`]()) and
-    /// [`"\u{65}\u{301}"`]() (also [`"é"`](), perhaps, because the document is
+    /// For example, if a document vends separate keys for `"\u{E9}" (`"é") and
+    /// `"\u{65}\u{301}" (also `"é"`, perhaps, because the document is
     /// being used to bootstrap a unicode table), uniquing them by ``String``
     /// comparison would drop one of the values.
     ///
@@ -89,14 +89,6 @@ extension BSON.DocumentDecoder
         }
     }
 }
-extension BSON.DocumentDecoder:Sequence
-{
-    @inlinable public
-    func makeIterator() -> Iterator
-    {
-        .init(base: self.index.makeIterator())
-    }
-}
 extension BSON.DocumentDecoder
 {
     @inlinable public
@@ -105,31 +97,44 @@ extension BSON.DocumentDecoder
         self.index.keys.contains(key)
     }
 
-    @inlinable public consuming
-    func single() throws -> BSON.FieldDecoder<CodingKey>
+    /// Returns a dictionary of all the indexed fields in the original document. It does not
+    /// include fields that were ignored per the schema definition.
+    ///
+    /// Iterating ``DocumentDecoder`` is an anti-pattern, and should only be used for debugging
+    /// and reflection. The order of the fields in the dictionary is not stable, and
+    /// constructing the dictionary is more expensive than iterating a type designed for
+    /// sequential consumption, like ``BSON.KeyspaceDecoder``, which does not allocate storage.
+    @inlinable public
+    var indexedFields:[CodingKey: BSON.AnyValue] { self.index }
+
+    @inlinable public
+    var single:BSON.FieldDecoder<CodingKey>
     {
-        var single:BSON.FieldDecoder<CodingKey>? = nil
-        for field:BSON.FieldDecoder<CodingKey> in self
+        consuming get throws
         {
-            if case nil = single
+            var single:BSON.FieldDecoder<CodingKey>? = nil
+            for (key, value):(CodingKey, BSON.AnyValue) in self.index
             {
-                single = field
+                if  case nil = single
+                {
+                    single = .init(key: key, value: value)
+                }
+                else
+                {
+                    throw BSON.SingleKeyError<CodingKey>.multiple
+                }
             }
+            guard let single
             else
             {
-                throw BSON.SingleKeyError<CodingKey>.multiple
+                throw BSON.SingleKeyError<CodingKey>.none
             }
+            return single
         }
-        guard let single
-        else
-        {
-            throw BSON.SingleKeyError<CodingKey>.none
-        }
-        return single
     }
 
     @inlinable public
-    subscript(key:CodingKey) -> BSON.OptionalDecoder<CodingKey>
+    subscript(key:CodingKey) -> BSON.FieldAccessor<CodingKey>
     {
         .init(key: key, value: self.index[key])
     }

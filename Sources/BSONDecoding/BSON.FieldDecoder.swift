@@ -3,7 +3,7 @@ extension BSON
     /// A field that is already known to exist in a document. This type is the return value of
     /// ``DocumentDecoder``’s optional subscript.
     ///
-    /// Compare with: ``OptionalDecoder``.
+    /// Compare with: ``FieldAccessor``.
     @frozen public
     struct FieldDecoder<Key> where Key:Sendable
     {
@@ -20,7 +20,7 @@ extension BSON
         }
     }
 }
-extension BSON.FieldDecoder:BSON.TraceableDecoder
+extension BSON.FieldDecoder:BSON.TracingDecoder
 {
     /// Decodes the value of this field with the given decoder.
     /// Throws a ``BSON/DecodingError`` wrapping the underlying

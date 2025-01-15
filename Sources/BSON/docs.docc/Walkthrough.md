@@ -64,9 +64,9 @@ The interface for decoding documents is the ``BSON.DocumentDecoder`` type.
 
 Types that conform to ``BSONDocumentDecodable`` must implement the ``BSONDocumentDecodable/init(bson:) [requirement]`` requirement. This initializer receives a ``BSON.DocumentDecoder`` keyed by the `CodingKey` type you provide.
 
-To access a non-optional field, subscript the decoder with the field key and call the ``BSON.TraceableDecoder/decode(to:)`` method. This method will throw an error with an attached diagnostic trace if the field is missing or has the wrong type.
+To access a non-optional field, subscript the decoder with the field key and call the ``BSON.TracingDecoder/decode(to:)`` method. This method will throw an error with an attached diagnostic trace if the field is missing or has the wrong type.
 
-To access an optional field, chain the subscript with the optional chaining operator (`?`) before calling ``BSON.TraceableDecoder/decode(to:)``.
+To access an optional field, chain the subscript with the optional chaining operator (`?`) before calling ``BSON.TracingDecoder/decode(to:)``.
 
 @Snippet(id: Walkthrough, slice: EXAMPLE_MODEL_DECODABLE)
 
@@ -94,7 +94,7 @@ The library passes an instance of this type `inout` to your ``BSONDocumentEncoda
 
 @Snippet(id: Walkthrough, slice: EXAMPLE_MODEL_ENCODABLE)
 
-The code looks simple, but the encoding syntax is quite powerful. When assigning to ``BSON.DocumentEncoder.subscript(_:)``’s setter, nil values become no-ops. This means that the `name` property will not be encoded if it is `nil`, which is almost always what we want.
+The code looks simple, but the encoding syntax is quite powerful. When assigning to ``BSON.DocumentEncoder.subscript(_:) -> Value?``’s setter, nil values become no-ops. This means that the `name` property will not be encoded if it is `nil`, which is almost always what we want.
 
 You can also get a little more creative with the encoding logic. In this example, we also elide the `rank` field if the model’s rank is `newModel`, to match the behavior of the decoding function, which infers a default rank of `newModel` if the field is missing. This could be profitable if `newModel` were a very common value for `rank`, and we wanted to save space by not encoding it.
 

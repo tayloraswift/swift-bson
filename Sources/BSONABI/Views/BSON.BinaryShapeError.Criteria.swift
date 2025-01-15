@@ -1,10 +1,10 @@
-extension BSON.ShapeError
+extension BSON.BinaryShapeError
 {
     /// What shape you expected a list or binary array to have.
     @frozen public
     enum Criteria:Hashable, Sendable
     {
-        case length(Int)
-        case multiple(of:Int)
+        case size(Int)
+        case stride(of:Int)
     }
 }

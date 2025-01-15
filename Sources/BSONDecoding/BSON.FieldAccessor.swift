@@ -4,14 +4,9 @@ extension BSON
     /// ``DocumentDecoder``’s non-optional subscript, and is useful for obtaining structured
     /// diagnostics for “key-not-found” scenarios.
     ///
-    /// The name `OptionalDecoder` is counterintuitive because you would almost always use this
-    /// type to access fields that you expect to be present. It is named as such because it does
-    /// *not* unwrap the value (it contains an ``Optional``), leaving the nil state available
-    /// for raising diagnostics.
-    ///
     /// Compare with: ``FieldDecoder``.
     @frozen public
-    struct OptionalDecoder<Key> where Key:Sendable
+    struct FieldAccessor<Key> where Key:Sendable
     {
         public
         let key:Key
@@ -26,10 +21,10 @@ extension BSON
         }
     }
 }
-extension BSON.OptionalDecoder
+extension BSON.FieldAccessor
 {
-    @inlinable public static
-    func ?? (lhs:Self, rhs:@autoclosure () -> Self) -> Self
+    @inlinable public
+    static func ?? (lhs:Self, rhs:@autoclosure () -> Self) -> Self
     {
         if case nil = lhs.value
         {
@@ -41,7 +36,7 @@ extension BSON.OptionalDecoder
         }
     }
 }
-extension BSON.OptionalDecoder
+extension BSON.FieldAccessor
 {
     /// Gets the value of this key, throwing a ``BSON.DocumentKeyError``
     /// if it is nil. This is a distinct condition from an explicit
@@ -59,7 +54,7 @@ extension BSON.OptionalDecoder
         }
     }
 }
-extension BSON.OptionalDecoder:BSON.TraceableDecoder
+extension BSON.FieldAccessor:BSON.TracingDecoder
 {
     /// Decodes the value of this implicit field with the given decoder, throwing a
     /// ``BSON.DocumentKeyError`` if it does not exist. Throws a

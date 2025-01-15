@@ -14,8 +14,7 @@ extension BSON.DecodingError:Equatable where Location:Equatable
 }
 extension BSON.DecodingError:TraceableError
 {
-    /// Returns a single note that says
-    /// [`"while decoding value for field '_'"`]().
+    /// Returns a single note that says `"while decoding value for field '_'`.
     public
     var notes:[String]
     {
