@@ -215,6 +215,26 @@ struct ExampleModel:BSONDocumentEncodable, BSONDocumentDecodable
 }
 ```
 
+The code to actually round-trip this to and from raw data looks like this:
+
+```swift
+let models:[ExampleModel] = [
+    .init(id: 0, name: "Gigi", rank: .topModel),
+    .init(id: 1, name: nil, rank: .newModel),
+]
+
+/// Round-trip one model
+let document:BSON.Document = .init(encoding: models[0])
+let _:ArraySlice<UInt8> = document.bytes
+let model:ExampleModel = try .init(bson: document)
+
+/// Round-trip a list of models
+let list:BSON.List = .init(elements: models)
+let _:ArraySlice<UInt8> = list.bytes
+let array:[ExampleModel] = try .init(bson: list)
+```
+
+
 ## Tutorials
 
 - [Usage Examples](https://swiftinit.org/docs/swift-bson/bson/examples)
