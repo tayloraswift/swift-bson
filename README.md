@@ -51,7 +51,7 @@ Another reason to use this library is that it is portable and has few dependenci
 
 ## Is it faster than Codable?
 
-The decoder is approximately 3 and 6 times faster than the default MongoKitten decoder. The encoder has similar throughput to `Codable`.
+The decoder is approximately 3 to 6 times faster than the default MongoKitten decoder. The encoder has similar throughput to `Codable`.
 
 ([Benchmark source code](/Benchmarks/Benchmarks/VsMongoKittenDefault))
 
