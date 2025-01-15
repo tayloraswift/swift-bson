@@ -89,14 +89,6 @@ extension BSON.DocumentDecoder
         }
     }
 }
-extension BSON.DocumentDecoder:Sequence
-{
-    @inlinable public
-    func makeIterator() -> Iterator
-    {
-        .init(base: self.index.makeIterator())
-    }
-}
 extension BSON.DocumentDecoder
 {
     @inlinable public
@@ -105,27 +97,35 @@ extension BSON.DocumentDecoder
         self.index.keys.contains(key)
     }
 
-    @inlinable public consuming
-    func single() throws -> BSON.FieldDecoder<CodingKey>
+    /// Returns a dictionary of all the indexed fields in the original document. It does not
+    /// include fields that were ignored per the schema definition.
+    @inlinable public
+    var indexedFields:[CodingKey: BSON.AnyValue] { self.index }
+
+    @inlinable public
+    var single:BSON.FieldDecoder<CodingKey>
     {
-        var single:BSON.FieldDecoder<CodingKey>? = nil
-        for field:BSON.FieldDecoder<CodingKey> in self
+        consuming get throws
         {
-            if case nil = single
+            var single:BSON.FieldDecoder<CodingKey>? = nil
+            for (key, value):(CodingKey, BSON.AnyValue) in self.index
             {
-                single = field
+                if  case nil = single
+                {
+                    single = .init(key: key, value: value)
+                }
+                else
+                {
+                    throw BSON.SingleKeyError<CodingKey>.multiple
+                }
             }
+            guard let single
             else
             {
-                throw BSON.SingleKeyError<CodingKey>.multiple
+                throw BSON.SingleKeyError<CodingKey>.none
             }
+            return single
         }
-        guard let single
-        else
-        {
-            throw BSON.SingleKeyError<CodingKey>.none
-        }
-        return single
     }
 
     @inlinable public

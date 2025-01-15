@@ -6,14 +6,27 @@ extension BSON
     {
         let codingPath:[any CodingKey]
         let allKeys:[Key]
-        let items:BSON.DocumentDecoder<BSON.Key>
+        let items:[BSON.Key: BSON.AnyValue]
 
-        init(_ dictionary:BSON.DocumentDecoder<BSON.Key>,
-            path:[any CodingKey])
+        init(bson:BSON.Document, path:[any CodingKey]) throws
         {
             self.codingPath = path
-            self.items = dictionary
-            self.allKeys = self.items.compactMap { .init(stringValue: $0.key.rawValue) }
+
+            var recognizedKeys:[Key] = []
+            var items:[BSON.Key: BSON.AnyValue] = [:]
+            var bson:BSON.KeyspaceDecoder<BSON.Key> = bson.parsed()
+            while let field:BSON.FieldDecoder = try bson[+]
+            {
+                items[field.key] = field.value
+
+                if  let key:Key = .init(stringValue: field.key.rawValue)
+                {
+                    recognizedKeys.append(key)
+                }
+            }
+
+            self.items = items
+            self.allKeys = recognizedKeys
         }
     }
 }
@@ -27,7 +40,7 @@ extension BSON.KeyedDecoder
         {
             self.codingPath + CollectionOfOne<any CodingKey>.init(key)
         }
-        guard let value:BSON.AnyValue = self.items[.init(key)]?.value
+        guard let value:BSON.AnyValue = self.items[.init(key)]
         else
         {
             let context:DecodingError.Context = .init(codingPath: path,
@@ -60,7 +73,7 @@ extension BSON.KeyedDecoder:KeyedDecodingContainerProtocol
     public
     func contains(_ key:Key) -> Bool
     {
-        self.items.contains(.init(key))
+        self.items.keys.contains(.init(key))
     }
 
     public
@@ -176,10 +189,8 @@ extension BSON.KeyedDecoder:KeyedDecodingContainerProtocol
         forKey key:Key) throws -> KeyedDecodingContainer<NestedKey>
     {
         let path:[any CodingKey] = self.codingPath + CollectionOfOne<any CodingKey>.init(key)
-        let container:BSON.KeyedDecoder<NestedKey> = .init(try self.diagnose(key)
-            {
-                try BSON.DocumentDecoder<BSON.Key>.init(parsing: $0)
-            },
+        let container:BSON.KeyedDecoder<NestedKey> = try .init(
+            bson: try self.diagnose(key) { try BSON.Document.init(bson: $0) },
             path: path)
         return .init(container)
     }
