@@ -2,7 +2,7 @@ extension BSON
 {
     /// A type that represents a scope for decoding operations.
     public
-    protocol TraceableDecoder
+    protocol TracingDecoder
     {
         /// Attempts to load a BSON variant value and passes it to the given
         /// closure, returns its result. If decoding fails, the implementation
@@ -10,7 +10,7 @@ extension BSON
         func decode<T>(with decode:(AnyValue) throws -> T) throws -> T
     }
 }
-extension BSON.TraceableDecoder
+extension BSON.TracingDecoder
 {
     @inlinable public
     func decode<CodingKey, T>(using _:CodingKey.Type = CodingKey.self,

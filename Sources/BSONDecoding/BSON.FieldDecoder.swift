@@ -20,7 +20,7 @@ extension BSON
         }
     }
 }
-extension BSON.FieldDecoder:BSON.TraceableDecoder
+extension BSON.FieldDecoder:BSON.TracingDecoder
 {
     /// Decodes the value of this field with the given decoder.
     /// Throws a ``BSON/DecodingError`` wrapping the underlying

@@ -54,7 +54,7 @@ extension BSON.FieldAccessor
         }
     }
 }
-extension BSON.FieldAccessor:BSON.TraceableDecoder
+extension BSON.FieldAccessor:BSON.TracingDecoder
 {
     /// Decodes the value of this implicit field with the given decoder, throwing a
     /// ``BSON.DocumentKeyError`` if it does not exist. Throws a

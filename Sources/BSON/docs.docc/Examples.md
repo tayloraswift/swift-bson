@@ -17,7 +17,7 @@ In the rest of these examples, we’ll omit the `CodingKey` definitions unless t
 
 When encoding optional fields, the encoder stays the same, as ``BSON.DocumentEncoder.subscript(_:) -> Value?`` will simply omit the field if the assigned value is nil.
 
-In the initializer, you should chain the accessed field with the optional chaining operator (`?`) before calling ``BSON.TraceableDecoder/decode(to:)``. If you omit this, the decoder will throw an error if the field is missing.
+In the initializer, you should chain the accessed field with the optional chaining operator (`?`) before calling ``BSON.TracingDecoder/decode(to:)``. If you omit this, the decoder will throw an error if the field is missing.
 
 @Snippet(id: Examples, slice: MODEL_OPTIONAL)
 
@@ -50,7 +50,7 @@ Any type that conforms to ``BSONEncodable`` and ``BSONDecodable`` can be used as
 
 ### Explicit Null Values
 
-The distinction between a field that is missing and a field that is explicitly ``BSON.AnyValue/null`` is usually irrelevant, but if you need to distinguish between the two cases, supply the decoded type explicitly to ``BSON.TraceableDecoder/decode(to:)``. This will fail with an error if the field is present, but contains a ``BSON.AnyValue/null`` value.
+The distinction between a field that is missing and a field that is explicitly ``BSON.AnyValue/null`` is usually irrelevant, but if you need to distinguish between the two cases, supply the decoded type explicitly to ``BSON.TracingDecoder/decode(to:)``. This will fail with an error if the field is present, but contains a ``BSON.AnyValue/null`` value.
 
 @Snippet(id: Examples, slice: MODEL_NULL)
 
