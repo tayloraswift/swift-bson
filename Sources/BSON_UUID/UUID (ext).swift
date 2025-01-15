@@ -7,7 +7,7 @@ extension UUID:BSONBinaryDecodable
     init(bson:BSON.BinaryDecoder) throws
     {
         try bson.subtype.expect(.uuid)
-        try bson.shape.expect(length: 16)
+        try bson.shape.expect(size: 16)
 
         self.init(bson.bytes)
     }
