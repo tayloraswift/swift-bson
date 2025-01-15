@@ -6,14 +6,12 @@ import BSONABI
 ///
 /// In general, you should *not* require this protocol if the intention is
 /// simply to constrain a type parameter to a type that can only encode a
-/// BSON list. For example, ``Array`` always encodes itself as a list, but
-/// it does not conform to this protocol.
+/// BSON list.
 ///
 /// >   Tip:
-///     Not every type that *can* be ``BSONListEncodable`` *should* be
-///     ``BSONListEncodable``. For example, ``Set`` is a ``Sequence``, but
-///     it does not encode itself deterministically. So encoding instances
-///     of ``Set`` directly is usually not what you want.
+///     Not every type that *can* be ``BSONListEncodable`` *should* be ``BSONListEncodable``.
+///     For example, ``String`` is a ``Sequence`` of ``Character``s, but encoding strings as
+///     lists of characters is just stupid.
 public
 protocol BSONListEncodable:BSONEncodable
 {
