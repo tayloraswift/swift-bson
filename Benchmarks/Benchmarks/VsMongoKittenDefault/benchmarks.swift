@@ -137,13 +137,7 @@ func encodeWithMongoKittenDefault(_ models:[DocumentModel]) -> Document
 }
 func encodeWithThisLibrary(_ models:[DocumentModel]) -> BSON.List
 {
-    .init
-    {
-        for model:DocumentModel in models
-        {
-            $0[+] = model
-        }
-    }
+    .init(elements: models)
 }
 
 func decodeWithMongoKittenDefault(_ bson:Document) throws -> [DocumentModel]
@@ -152,13 +146,7 @@ func decodeWithMongoKittenDefault(_ bson:Document) throws -> [DocumentModel]
 }
 func decodeWithThisLibrary(_ bson:BSON.List) throws -> [DocumentModel]
 {
-    var models:[DocumentModel] = []
-    var parsed:BSON.ListDecoder = bson.parsed
-    while let model:DocumentModel = try parsed[+]?.decode()
-    {
-        models.append(model)
-    }
-    return models
+    try .init(bson: bson)
 }
 
 
@@ -201,7 +189,7 @@ let benchmarks:() -> () =
         (benchmark:Benchmark) in
 
         let models:[DocumentModel] = generateRandomDocumentModels(100)
-        let bson:Document = try! BSONEncoder().encode(models)
+        let bson:Document = encodeWithMongoKittenDefault(models)
 
         benchmark.startMeasurement()
 
