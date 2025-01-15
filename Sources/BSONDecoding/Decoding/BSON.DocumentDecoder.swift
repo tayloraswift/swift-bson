@@ -99,6 +99,11 @@ extension BSON.DocumentDecoder
 
     /// Returns a dictionary of all the indexed fields in the original document. It does not
     /// include fields that were ignored per the schema definition.
+    ///
+    /// Iterating ``DocumentDecoder`` is an anti-pattern, and should only be used for debugging
+    /// and reflection. The order of the fields in the dictionary is not stable, and
+    /// constructing the dictionary is more expensive than iterating a type designed for
+    /// sequential consumption, like ``BSON.KeyspaceDecoder``, which does not allocate storage.
     @inlinable public
     var indexedFields:[CodingKey: BSON.AnyValue] { self.index }
 
