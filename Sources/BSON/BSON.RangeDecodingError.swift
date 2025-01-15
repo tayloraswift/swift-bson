@@ -13,7 +13,7 @@ extension BSON.RangeDecodingError:CustomStringConvertible
     {
         switch self
         {
-        case .invalidBounds:    "Invalid range bounds"
+        case .invalidBounds:    "invalid range bounds"
         }
     }
 }

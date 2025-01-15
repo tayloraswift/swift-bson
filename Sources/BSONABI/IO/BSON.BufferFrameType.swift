@@ -25,7 +25,7 @@ extension BSON.BufferFrameType
     /// The number of (conceptual) bytes in the frame suffix of the type
     /// this frame type is associated with. This is 0 if ``trailer`` is
     /// nil, and 1 otherwise.
-    @inlinable
+    @inlinable package
     static var suffix:Int
     {
         switch self.trailer

@@ -17,21 +17,3 @@ extension BSON
         }
     }
 }
-extension BSON.BinaryShapeError:CustomStringConvertible
-{
-    public
-    var description:String
-    {
-        switch self.expected
-        {
-        case nil:
-            "Invalid size (\(self.bytes))."
-
-        case .size(let bytes)?:
-            "Invalid size (\(self.bytes)), expected \(bytes) bytes."
-
-        case .stride(of: let stride)?:
-            "Invalid size (\(self.bytes)), expected multiple of \(stride)."
-        }
-    }
-}
