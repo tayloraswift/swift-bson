@@ -15,7 +15,7 @@ In the rest of these examples, we’ll omit the `CodingKey` definitions unless t
 
 ### Optionals
 
-When encoding optional fields, the encoder stays the same, as ``BSON.DocumentEncoder.subscript(_:)`` will simply omit the field if the assigned value is nil.
+When encoding optional fields, the encoder stays the same, as ``BSON.DocumentEncoder.subscript(_:) -> Value?`` will simply omit the field if the assigned value is nil.
 
 In the initializer, you should chain the accessed field with the optional chaining operator (`?`) before calling ``BSON.TraceableDecoder/decode(to:)``. If you omit this, the decoder will throw an error if the field is missing.
 
