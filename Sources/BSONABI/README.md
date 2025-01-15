@@ -10,6 +10,8 @@ External users should avoid importing this module directly. Instead, import ``/B
 
 -   ``BSON.AnyValue``
 -   ``BSON.AnyType``
+-   ``BSON.TypeError``
+-   ``BSON.TypecastError``
 
 ### Primitive types
 
@@ -22,6 +24,10 @@ External users should avoid importing this module directly. Instead, import ``/B
 
 ### String-like types
 
+-   ``BSON.BinaryBuffer``
+-   ``BSON.BinaryFrame``
+-   ``BSON.BinaryShape``
+-   ``BSON.BinarySubtype``
 -   ``BSON.BinaryView``
 -   ``BSON.UTF8View``
 
@@ -53,8 +59,6 @@ This module only implements the basic infrastructure for BSON decoding. Most of 
 
 -   ``BSON.Decoder``
 -   ``BSON.Input``
--   ``BSON.TypeError``
--   ``BSON.TypecastError``
 
 ### Serialization and encoding
 

@@ -13,7 +13,7 @@ extension BSON
         var index:Int
 
         /// Creates a parsing input view over the given `source` data,
-        /// and initializes its ``index`` to the start index of the `source`.
+        /// and initializes its `index` to the start index of the `source`.
         @inlinable public
         init(_ source:ArraySlice<UInt8>)
         {
@@ -41,7 +41,7 @@ extension BSON.Input
         return self.bytes[self.index]
     }
     /// Advances the current index until encountering the specified `byte`.
-    /// After this method returns, ``index`` points to the byte after
+    /// After this method returns, `index` points to the byte after
     /// the matched byte.
     ///
     /// -   Returns:
@@ -180,9 +180,9 @@ extension BSON.Input
         try .init(slicing: try self.parse(View.Frame.self))
     }
 
-    /// Returns a slice of the input from the current ``index`` to the end
+    /// Returns a slice of the input from the current `index` to the end
     /// of the input. Accessing this property does not affect the current
-    /// ``index``.
+    /// `index`.
     @inlinable public
     var remaining:ArraySlice<UInt8>
     {

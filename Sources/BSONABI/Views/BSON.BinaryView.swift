@@ -80,7 +80,7 @@ extension BSON.BinaryView<ArraySlice<UInt8>>:BSON.BufferTraversable
 extension BSON.BinaryView
 {
     /// The length that would be encoded in this binary array’s prefixed header.
-    /// Equal to [`self.bytes.count`](RandomAccessCollection.count).
+    /// Equal to [`self.bytes.count`](Collection.count-[requirement:false]).
     @inlinable public
     var header:Int32
     {
