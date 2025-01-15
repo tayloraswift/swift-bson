@@ -27,7 +27,7 @@ extension BSON.ListDecoder
     var position:Int { self.index }
 
     @inlinable public
-    subscript(_:(BSON.EndIndex) -> ()) -> BSON.OptionalDecoder<Int>
+    subscript(_:(BSON.EndIndex) -> ()) -> BSON.FieldAccessor<Int>
     {
         mutating get throws
         {

@@ -134,7 +134,7 @@ extension BSON.DocumentDecoder
     }
 
     @inlinable public
-    subscript(key:CodingKey) -> BSON.OptionalDecoder<CodingKey>
+    subscript(key:CodingKey) -> BSON.FieldAccessor<CodingKey>
     {
         .init(key: key, value: self.index[key])
     }
