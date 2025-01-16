@@ -14,7 +14,7 @@ let package:Package = .init(name: "swift-bson",
     ],
     dependencies: [
         .package(url: "https://github.com/tayloraswift/swift-grammar",
-            from: "0.4.1"),
+            from: "0.5.0"),
 
         .package(url: "https://github.com/tayloraswift/swift-hash",
             from: "0.7.0"),
