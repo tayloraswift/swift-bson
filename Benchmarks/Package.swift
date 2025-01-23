@@ -6,7 +6,7 @@ let package:Package = .init(name: "swift-bson-benchmarks",
     ],
     dependencies: [
         .package(url: "https://github.com/ordo-one/package-benchmark", from: "1.27.3"),
-        .package(url: "https://github.com/orlandos-nl/BSON", from: "8.1.2"),
+        .package(url: "https://github.com/orlandos-nl/BSON", from: "8.1.5"),
         .package(path: ".."),
     ],
     targets: [
