@@ -11,6 +11,20 @@ extension BSON
     {
         public
         let key:Key
+
+        #if compiler(>=6.1)
+        //  Needed to work around compiler bug https://github.com/swiftlang/swift/issues/78802
+        public
+        let space:any RawRepresentable<String>.Type
+
+        @inlinable public
+        init(mapping key:Key, to space:any RawRepresentable<String>.Type)
+        {
+            self.key = key
+            self.space = space
+        }
+
+        #else
         public
         let space:any (RawRepresentable<String> & Sendable).Type
 
@@ -20,6 +34,7 @@ extension BSON
             self.key = key
             self.space = space
         }
+        #endif
     }
 }
 extension BSON.KeyspaceError:Equatable
